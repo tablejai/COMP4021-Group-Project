@@ -1,18 +1,16 @@
 {
-  "name": "tetris-9",
+  "name": "comp4021-group-project",
   "version": "1.0.0",
   "description": "",
-  "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "npm start -w backend -w frontend"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "workspaces": [
-    "backend",
-    "frontend",
-    "shared"
-  ]
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "socket.io": "^4.7.5"
+  }
 }
