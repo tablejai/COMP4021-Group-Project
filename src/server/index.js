@@ -25,10 +25,10 @@ io.on("connection", (client) => {
 
 function startGameInterval(client) {
     const intervalID = setInterval(() => {
-        const gameState = createGameState();
-        const rank = gameLoop(gameState);
+        const rank = gameLoop();
         if (rank != -1) {
             // If haven't lose
+            const gameState = createGameState();
             client.emit("gameState", JSON.stringify(gameState));
         } else {
             // If have lost

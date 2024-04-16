@@ -11,8 +11,10 @@ class Board {
     addBlockToBoard(block) {
         for (let row = 0; row < block.blockShape.length; row++) {
             for (let col = 0; col < block.blockShape[row].length; col++) {
-                this.boardState[block.x + col][block.y + row] =
-                    block.blockShape[row][col];
+                if (block.blockShape[row][col] != null) {
+                    this.boardState[block.y + row][block.x + col] =
+                        block.blockShape[row][col];
+                }
             }
         }
     }

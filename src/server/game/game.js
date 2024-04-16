@@ -3,12 +3,14 @@ const { Board } = require("./board");
 
 let board = new Board(10, 20);
 
-function spawnNewBlock() {
-    return new Block(Block.getRandomBlockType());
-}
+let currentBlock = null;
 
-let currentBlock = spawnNewBlock();
-// let currentBlock = new Block(Block.getRandomBlockType());
+function spawnNewBlock() {
+    if (currentBlock != null) {
+        board.addBlockToBoard(currentBlock);
+    }
+    currentBlock = new Block(Block.getRandomBlockType());
+}
 
 function createGameState() {
     // TODO: Check if board and currentBlock is initialized or not
@@ -20,15 +22,18 @@ function createGameState() {
     };
 }
 
-function gameLoop(gameState) {
+function gameLoop() {
     // Where the actual game loop happens
-    console.log(currentBlock.getBlockInfo());
+    if (currentBlock == null) {
+        spawnNewBlock();
+    }
+
     if (currentBlock.shouldFall(Date.now())) {
         currentBlock.resetLastDropTicks();
         currentBlock.fall();
         if (!board.canAdd(currentBlock)) {
             currentBlock.rise();
-            currentBlock = spawnNewBlock();
+            spawnNewBlock();
         }
     }
 
