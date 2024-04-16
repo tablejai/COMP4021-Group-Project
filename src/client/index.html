@@ -14,10 +14,12 @@
 </head>
 
 <body>
-    <script src="connection.js"></script>
-    <script src="game/board.js"></script>
     <script src="game/constants.js"></script>
+    <script src="game/board.js">
+        var board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
+    </script>
     <script src="game/sketch.js"></script>
+    <script src="connection.js"></script>
 </body>
 
 </html>

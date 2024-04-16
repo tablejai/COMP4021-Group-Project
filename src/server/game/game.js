@@ -1,10 +1,10 @@
 function createEmptyBoard() { 
-    return Array(20).fill(0).map(() => Array(10));
+    return Array(20).fill(0).map(() => Array(10).fill(0));
 }
 function createGameState() { 
     return {
         player: 1,
-        playerBoard: createEmptyBoard(),
+        board: createEmptyBoard(),
         timeLeft : 300
     }
 }

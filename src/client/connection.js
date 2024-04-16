@@ -8,8 +8,15 @@ function handleInit(msg) {
     console.log(msg);
 }
 
-function handleGameState(gameState) {
+function parseGameStateData(gameState) { 
     gameState = JSON.parse(gameState);
+    board.boardState = gameState["board"];
+}
+
+function handleGameState(gameState) {
+    // TODO: Probably should find a way to ensure the board object is initialized in the
+    // sketch.js setup() before doing anything here
+    parseGameStateData(gameState);
 }
 
 function handleGameover(gameover) { 

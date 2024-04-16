@@ -5,7 +5,7 @@ class Board {
 
     this.cols = w;
     this.rows = h;
-    this.boardState = Array(20).fill('#f43').map(() => Array(10).fill('#f43'));
+    this.boardState = Array(20).fill(0).map(() => Array(10).fill(0));
 
     this.borderSize = 3;
     this.cellSize = 35;
