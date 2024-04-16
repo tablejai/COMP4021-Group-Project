@@ -10,11 +10,8 @@ function handleInit(msg) {
 
 function handleGameState(gameState) {
     gameState = JSON.parse(gameState);
-    console.log(gameState);
-    // requestAnimationFrame(() => paintGame(gameState));
 }
 
 function handleGameover(gameover) { 
     gameoverData = JSON.parse(gameover);
-    console.log(gameover);
 }
