@@ -1,5 +1,5 @@
 function createEmptyBoard() { 
-    return Array(20).fill(0).map(() => Array(10).fill(0));
+    return Array(20).fill(0).map(() => Array(10).fill("white"));
 }
 function createGameState() { 
     return {

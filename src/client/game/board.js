@@ -1,11 +1,12 @@
 class Board {
+
   constructor(w, h) {
     this.foreground = [240];
     this.background = [170];
 
     this.cols = w;
     this.rows = h;
-    this.boardState = Array(20).fill(0).map(() => Array(10).fill(0));
+    this.boardState = Array(20).fill(0).map(() => Array(10).fill("white"));
 
     this.borderSize = 3;
     this.cellSize = 35;
@@ -31,8 +32,7 @@ class Board {
     // Draw the cells in between
     for (let row = 0; row < this.boardState.length; row++) {
       for (let col = 0; col < this.boardState[row].length; col++) {
-        // TODO: Change the fill according to the color of the one in the grid
-        fill(255);
+        fill(this.boardState[row][col]);
 
         rect(
           this.cellSize * col + this.borderSize,
