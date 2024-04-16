@@ -1,7 +1,6 @@
 function keyTyped() {
     // TODO: Think if the emitMsg actually be like this
     let emitMsg = null;
-    console.log(key);
     switch (key) {
         case "a": // Pressed a
             emitMsg = { keyPressed: "a" };
@@ -26,7 +25,6 @@ function keyTyped() {
     }
 
     if (emitMsg != null) {
-        console.log(JSON.stringify(emitMsg));
         socket.emit("keyTyped", JSON.stringify(emitMsg));
     }
 }

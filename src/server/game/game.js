@@ -1,12 +1,15 @@
-function createEmptyBoard() {
-    return Array(20)
-        .fill(0)
-        .map(() => Array(10).fill("white"));
-}
+const { Block } = require("./block");
+const { Board } = require("./board");
+
+let board = new Board(10, 20);
+let currentBlock = new Block(Block.getRandomBlockType());
+
 function createGameState() {
+    // TODO: Check if board and currentBlock is initialized or not
     return {
         player: 1,
-        board: createEmptyBoard(),
+        board: board.getBoardState(),
+        currentBlock: currentBlock.getBlockInfo(),
         timeLeft: 300,
     };
 }
@@ -14,6 +17,10 @@ function createGameState() {
 function gameLoop(gameState) {
     // Where the actual game loop happens
     return 1;
+}
+
+function spawnNewBlock() {
+    currentBlock = new Block(Block.getRandomBlockType(), 0, 0);
 }
 
 module.exports = {

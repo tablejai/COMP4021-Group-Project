@@ -9,13 +9,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.dom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.sound.min.js"></script>
+    <script src="../shared/constants.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <script src="game/constants.js"></script>
+    <script src="game/block.js">
+    </script>
     <script src="game/board.js">
+        var currentBlock = null;
         var board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
     </script>
     <script src="game/sketch.js"></script>

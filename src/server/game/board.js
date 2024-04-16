@@ -2,9 +2,9 @@ class Board {
     constructor(w, h) {
         this.cols = w;
         this.rows = h;
-        this.boardState = Array(20)
+        this.boardState = Array(this.rows)
             .fill(0)
-            .map(() => Array(10).fill("white"));
+            .map(() => Array(this.cols).fill("white"));
     }
 
     addBlockToBoard(block) {
@@ -15,4 +15,12 @@ class Board {
             }
         }
     }
+
+    getBoardState() {
+        return this.boardState;
+    }
 }
+
+module.exports = {
+    Board,
+};

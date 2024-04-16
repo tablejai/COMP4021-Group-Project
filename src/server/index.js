@@ -7,7 +7,7 @@ const httpServer = createServer(app);
 const io = require("socket.io")(httpServer);
 
 const { createGameState, gameLoop } = require("./game/game");
-const { FRAME_RATE } = require("./constants");
+const { FRAME_RATE } = require("../shared/constants");
 
 io.listen(9000);
 

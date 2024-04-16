@@ -8,9 +8,15 @@ function handleInit(msg) {
     console.log(msg);
 }
 
-function parseGameStateData(gameState) { 
+function parseGameStateData(gameState) {
     gameState = JSON.parse(gameState);
+
     board.boardState = gameState["board"];
+    currentBlock = new Block(
+        gameState["currentBlock"]["blockType"],
+        gameState["currentBlock"]["x"],
+        gameState["currentBlock"]["y"]
+    );
 }
 
 function handleGameState(gameState) {
@@ -19,6 +25,6 @@ function handleGameState(gameState) {
     parseGameStateData(gameState);
 }
 
-function handleGameover(gameover) { 
+function handleGameover(gameover) {
     gameoverData = JSON.parse(gameover);
 }
