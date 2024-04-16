@@ -15,6 +15,25 @@ class Block {
 
         this.x = Math.floor((BOARD_WIDTH - this.blockShape.length) / 2);
         this.y = 0;
+
+        this.lastDropTicks = Date.now();
+        this.dropInterval = 500; // In milliseconds
+    }
+
+    shouldFall(currentTicks) {
+        return currentTicks - this.lastDropTicks > this.dropInterval;
+    }
+
+    fall() {
+        this.y++;
+    }
+
+    rise() {
+        this.y--;
+    }
+
+    resetLastDropTicks() {
+        this.lastDropTicks = Date.now();
     }
 
     getBlockInfo() {

@@ -14,18 +14,18 @@ io.listen(9000);
 io.on("connection", (client) => {
     // TODO: Emit some important information through the init connection
     // e.g. game version
+    client.emit("init", { data: "Yay you came" });
+
     client.on("keyTyped", (keyTypedData) => {
         console.log(keyTypedData);
     });
 
-    client.emit("init", { data: "Yay you came" });
-
-    const gameState = createGameState();
-    startGameInterval(client, gameState);
+    startGameInterval(client);
 });
 
-function startGameInterval(client, gameState) {
+function startGameInterval(client) {
     const intervalID = setInterval(() => {
+        const gameState = createGameState();
         const rank = gameLoop(gameState);
         if (rank != -1) {
             // If haven't lose

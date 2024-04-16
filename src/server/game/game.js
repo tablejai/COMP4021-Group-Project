@@ -2,7 +2,13 @@ const { Block } = require("./block");
 const { Board } = require("./board");
 
 let board = new Board(10, 20);
-let currentBlock = new Block(Block.getRandomBlockType());
+
+function spawnNewBlock() {
+    return new Block(Block.getRandomBlockType());
+}
+
+let currentBlock = spawnNewBlock();
+// let currentBlock = new Block(Block.getRandomBlockType());
 
 function createGameState() {
     // TODO: Check if board and currentBlock is initialized or not
@@ -16,11 +22,17 @@ function createGameState() {
 
 function gameLoop(gameState) {
     // Where the actual game loop happens
-    return 1;
-}
+    console.log(currentBlock.getBlockInfo());
+    if (currentBlock.shouldFall(Date.now())) {
+        currentBlock.resetLastDropTicks();
+        currentBlock.fall();
+        if (!board.canAdd(currentBlock)) {
+            currentBlock.rise();
+            currentBlock = spawnNewBlock();
+        }
+    }
 
-function spawnNewBlock() {
-    currentBlock = new Block(Block.getRandomBlockType(), 0, 0);
+    return 1;
 }
 
 module.exports = {
