@@ -1,12 +1,13 @@
 class Board {
-
   constructor(w, h) {
     this.foreground = [240];
     this.background = [170];
 
     this.cols = w;
     this.rows = h;
-    this.boardState = Array(20).fill(0).map(() => Array(10).fill("white"));
+    this.boardState = Array(20)
+      .fill(0)
+      .map(() => Array(10).fill("white"));
 
     this.borderSize = 3;
     this.cellSize = 35;
@@ -14,7 +15,7 @@ class Board {
   }
 
   show() {
-      // Draw the background
+    // Draw the background
     if (this.showGridlines) fill(this.foreground);
     else fill(this.background);
 
