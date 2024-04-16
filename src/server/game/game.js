@@ -1,22 +1,22 @@
 function createEmptyBoard() {
-  return Array(20)
-    .fill(0)
-    .map(() => Array(10).fill("white"));
+    return Array(20)
+        .fill(0)
+        .map(() => Array(10).fill("white"));
 }
 function createGameState() {
-  return {
-    player: 1,
-    board: createEmptyBoard(),
-    timeLeft: 300,
-  };
+    return {
+        player: 1,
+        board: createEmptyBoard(),
+        timeLeft: 300,
+    };
 }
 
 function gameLoop(gameState) {
-  // Where the actual game loop happens
-  return 1;
+    // Where the actual game loop happens
+    return 1;
 }
 
 module.exports = {
-  createGameState,
-  gameLoop,
+    createGameState,
+    gameLoop,
 };
