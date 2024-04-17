@@ -8,6 +8,14 @@ class Block {
     }
 
     draw() {
+        const topLeftX =
+            floor(windowWidth / 2) -
+            floor((CELL_SIZE * BOARD_WIDTH) / 2 + BORDER_SIZE);
+
+        const topLeftY =
+            floor(windowHeight / 2) -
+            floor((CELL_SIZE * BOARD_HEIGHT) / 2 + BORDER_SIZE);
+
         for (let row = 0; row < this.blockShape.length; row++) {
             for (let col = 0; col < this.blockShape.length; col++) {
                 if (this.blockShape[row][col] != null) {
@@ -17,8 +25,8 @@ class Block {
                     fill(this.blockShape[row][col]);
 
                     rect(
-                        BORDER_SIZE + CELL_SIZE * x,
-                        BORDER_SIZE + CELL_SIZE * y,
+                        topLeftX + BORDER_SIZE + CELL_SIZE * x,
+                        topLeftY + BORDER_SIZE + CELL_SIZE * y,
                         CELL_SIZE - 1,
                         CELL_SIZE - 1
                     );

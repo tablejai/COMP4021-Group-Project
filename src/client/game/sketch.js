@@ -5,10 +5,14 @@ function setup() {
     let canvasWidth = board.cellSize * BOARD_WIDTH + board.borderSize * 2;
     let canvasHeight = board.cellSize * BOARD_HEIGHT + board.borderSize * 2;
 
-    createCanvas(canvasWidth, canvasHeight);
+    createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
     board.draw();
     currentBlock.draw();
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }

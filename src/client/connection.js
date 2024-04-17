@@ -22,7 +22,6 @@ function parseGameStateData(gameState) {
             gameState["currentBlock"]["x"],
             gameState["currentBlock"]["y"]
         );
-        redraw();
     }
 }
 
