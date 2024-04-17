@@ -29,6 +29,11 @@ function keyHandler(keyPressed) {
             }
             break;
         case "s":
+            // Falls
+            currentBlock.fall();
+            if (!board.canAdd(currentBlock)) {
+                currentBlock.rise();
+            }
             break;
         default:
             break;

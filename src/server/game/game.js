@@ -37,6 +37,8 @@ function gameLoop() {
         }
     }
 
+    board.clearRows();
+
     return 1;
 }
 

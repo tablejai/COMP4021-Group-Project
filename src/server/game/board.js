@@ -38,8 +38,18 @@ class Board {
                 }
             }
         }
-
         return true;
+    }
+
+    clearRows() {
+        for (let row = this.rows - 1; row >= 0; row--) {
+            if (!this.boardState[row].includes(this.background)) {
+                this.boardState.splice(row, 1);
+                this.boardState.unshift(
+                    new Array(this.cols).fill(this.background)
+                );
+            }
+        }
     }
 
     getBoardState() {
