@@ -6,31 +6,32 @@ const { createServer } = require("http");
 const httpServer = createServer(app);
 const io = require("socket.io")(httpServer);
 
-const { createGameState, gameLoop } = require("./game/game");
 const { FRAME_RATE } = require("../shared/constants");
-const { keyHandler } = require("./game/keyHandler");
+const { Game } = require("./game/game");
 
 io.listen(9000);
 
 io.on("connection", (client) => {
     // TODO: Emit some important information through the init connection
     // e.g. game version
-    client.emit("init", { data: "Yay you came" });
+    // TODO: Implement multiplayer by making use of playerID and roomID
 
-    client.on("keyTyped", (keyTypedData) => {
-        keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
-    });
+    let playerID = 1;
+    let roomID = 1;
+    client.emit("init", { playerID: playerID });
 
-    startGameInterval(client);
+    let game = new Game(playerID, roomID);
+    game.addKeyHandlers(client);
+
+    startGameInterval(client, game);
 });
 
-function startGameInterval(client) {
+function startGameInterval(client, game) {
     const intervalID = setInterval(() => {
-        const rank = gameLoop();
+        const rank = game.update();
         if (rank != -1) {
             // If haven't lose
-            const gameState = createGameState();
-            client.emit("gameState", JSON.stringify(gameState));
+            client.emit("gameState", JSON.stringify(game.getGameState()));
         } else {
             // If have lost
             client.emit("gameOver", { data: "idk man" });

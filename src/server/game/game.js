@@ -1,48 +1,106 @@
-const { Block } = require("./block");
 const { Board } = require("./board");
+const { Block } = require("./block");
 
-function spawnNewBlock() {
-    if (currentBlock != null) {
-        board.addBlockToBoard(currentBlock);
-    }
-    currentBlock = new Block(Block.getRandomBlockType());
-}
-
-board = new Board(10, 20);
-currentBlock = null;
-
-function createGameState() {
-    // TODO: Check if board and currentBlock is initialized or not
-    return {
-        player: 1,
-        board: board.getBoardState(),
-        currentBlock: currentBlock.getBlockInfo(),
-        timeLeft: 300,
-    };
-}
-
-function gameLoop() {
-    // Spawn new blocks when there were no blocks
-    if (currentBlock == null) {
-        spawnNewBlock();
+class Game {
+    constructor(playerID, roomID) {
+        this.roomID = roomID;
+        this.playerID = playerID; // Expect to be a list of players
+        this.currentBlock = null;
+        this.board = new Board(10, 20);
     }
 
-    // Handle the block falling logics
-    if (currentBlock.shouldFall(Date.now())) {
-        currentBlock.resetLastDropTicks();
-        currentBlock.fall();
-        if (!board.canAdd(currentBlock)) {
-            currentBlock.rise();
-            spawnNewBlock();
+    getCurrentBlock() {
+        return this.currentBlock;
+    }
+
+    spawnNewBlock() {
+        if (this.currentBlock != null) {
+            this.board.addBlockToBoard(this.currentBlock);
+        }
+
+        this.currentBlock = new Block(Block.getRandomBlockType());
+    }
+
+    update() {
+        // Spawn new blocks when there are no blocks
+        if (this.currentBlock == null) {
+            this.spawnNewBlock();
+        }
+
+        // Handle the block falling logics
+        if (this.currentBlock.shouldFall(Date.now())) {
+            this.currentBlock.resetLastDropTicks();
+            this.currentBlock.fall();
+            if (!this.board.canAdd(this.currentBlock)) {
+                this.currentBlock.rise();
+                this.spawnNewBlock();
+            }
+        }
+
+        // Clear Rows
+        this.board.clearRows();
+
+        return 1;
+    }
+
+    getGameState() {
+        return {
+            player: 1,
+            board: this.board.getBoardState(),
+            currentBlock: this.currentBlock.getBlockInfo(),
+            timeLeft: 300,
+        };
+    }
+
+    addKeyHandlers(client) {
+        client.on("keyTyped", (keyTypedData) => {
+            this.keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
+        });
+    }
+
+    keyHandler(keyPressed) {
+        switch (keyPressed) {
+            case "a":
+                // Move Left
+                this.currentBlock.moveLeft();
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.currentBlock.moveRight();
+                }
+                break;
+            case "d":
+                // Move Right
+                this.currentBlock.moveRight();
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.currentBlock.moveLeft();
+                }
+                break;
+            case "q":
+                // Rotate Anti-clockwise
+                this.currentBlock.rotateAntiClockwise();
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.currentBlock.rotateClockwise();
+                }
+                break;
+            case "e":
+                // Rotate Clockwise
+                this.currentBlock.rotateClockwise();
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.currentBlock.rotateAntiClockwise();
+                }
+                break;
+            case "s":
+                // Falls
+                this.currentBlock.fall();
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.currentBlock.rise();
+                }
+                break;
+            default:
+                break;
         }
     }
-
-    board.clearRows();
-
-    return 1;
 }
 
 module.exports = {
-    createGameState,
-    gameLoop,
+    Game,
 };
