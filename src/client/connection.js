@@ -4,20 +4,26 @@ socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
 socket.on("gameover", handleGameover);
 
+playerID = null;
+
 function handleInit(msg) {
-    console.log(msg);
+    playerID = JSON.parse(msg["playerID"]);
+    console.log(playerID);
 }
 
 function parseGameStateData(gameState) {
     gameState = JSON.parse(gameState);
 
-    board.boardState = gameState["board"];
-    currentBlock = new Block(
-        gameState["currentBlock"]["blockType"],
-        gameState["currentBlock"]["blockShape"],
-        gameState["currentBlock"]["x"],
-        gameState["currentBlock"]["y"]
-    );
+    if (gameState["playerID"] == parseInt(playerID)) {
+        board.boardState = gameState["board"];
+        currentBlock = new Block(
+            gameState["currentBlock"]["blockType"],
+            gameState["currentBlock"]["blockShape"],
+            gameState["currentBlock"]["x"],
+            gameState["currentBlock"]["y"]
+        );
+        redraw();
+    }
 }
 
 function handleGameState(gameState) {

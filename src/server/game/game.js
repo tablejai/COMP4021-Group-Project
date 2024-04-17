@@ -2,8 +2,8 @@ const { Board } = require("./board");
 const { Block } = require("./block");
 
 class Game {
-    constructor(playerID, roomID) {
-        this.roomID = roomID;
+    constructor(playerID, roomName) {
+        this.roomName = roomName;
         this.playerID = playerID; // Expect to be a list of players
         this.currentBlock = null;
         this.board = new Board(10, 20);
@@ -45,7 +45,7 @@ class Game {
 
     getGameState() {
         return {
-            player: 1,
+            playerID: this.playerID,
             board: this.board.getBoardState(),
             currentBlock: this.currentBlock.getBlockInfo(),
             timeLeft: 300,
