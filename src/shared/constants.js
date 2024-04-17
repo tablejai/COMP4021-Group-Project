@@ -1,4 +1,4 @@
-const FRAME_RATE = 10;
+const FRAME_RATE = 100;
 
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;

@@ -32,6 +32,14 @@ class Block {
         this.y--;
     }
 
+    moveLeft() {
+        this.x--;
+    }
+
+    moveRight() {
+        this.x++;
+    }
+
     resetLastDropTicks() {
         this.lastDropTicks = Date.now();
     }

@@ -8,6 +8,7 @@ const io = require("socket.io")(httpServer);
 
 const { createGameState, gameLoop } = require("./game/game");
 const { FRAME_RATE } = require("../shared/constants");
+const { keyHandler } = require("./game/keyHandler");
 
 io.listen(9000);
 
@@ -17,7 +18,7 @@ io.on("connection", (client) => {
     client.emit("init", { data: "Yay you came" });
 
     client.on("keyTyped", (keyTypedData) => {
-        console.log(keyTypedData);
+        keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
     });
 
     startGameInterval(client);

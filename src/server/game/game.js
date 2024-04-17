@@ -1,9 +1,9 @@
 const { Block } = require("./block");
 const { Board } = require("./board");
 
-let board = new Board(10, 20);
+board = new Board(10, 20);
 
-let currentBlock = null;
+currentBlock = null;
 
 function spawnNewBlock() {
     if (currentBlock != null) {
@@ -23,11 +23,12 @@ function createGameState() {
 }
 
 function gameLoop() {
-    // Where the actual game loop happens
+    // Spawn new blocks when there were no blocks
     if (currentBlock == null) {
         spawnNewBlock();
     }
 
+    // Handle the block falling logics
     if (currentBlock.shouldFall(Date.now())) {
         currentBlock.resetLastDropTicks();
         currentBlock.fall();
