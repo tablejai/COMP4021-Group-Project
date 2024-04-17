@@ -14,6 +14,7 @@ function parseGameStateData(gameState) {
     board.boardState = gameState["board"];
     currentBlock = new Block(
         gameState["currentBlock"]["blockType"],
+        gameState["currentBlock"]["blockShape"],
         gameState["currentBlock"]["x"],
         gameState["currentBlock"]["y"]
     );

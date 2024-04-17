@@ -1,16 +1,15 @@
 const { Block } = require("./block");
 const { Board } = require("./board");
 
-board = new Board(10, 20);
-
-currentBlock = null;
-
 function spawnNewBlock() {
     if (currentBlock != null) {
         board.addBlockToBoard(currentBlock);
     }
     currentBlock = new Block(Block.getRandomBlockType());
 }
+
+board = new Board(10, 20);
+currentBlock = null;
 
 function createGameState() {
     // TODO: Check if board and currentBlock is initialized or not

@@ -20,6 +20,10 @@ class Block {
         this.dropInterval = 500; // In milliseconds
     }
 
+    resetLastDropTicks() {
+        this.lastDropTicks = Date.now();
+    }
+
     shouldFall(currentTicks) {
         return currentTicks - this.lastDropTicks > this.dropInterval;
     }
@@ -40,12 +44,39 @@ class Block {
         this.x++;
     }
 
-    resetLastDropTicks() {
-        this.lastDropTicks = Date.now();
+    rotateClockwise() {
+        let temp = [];
+
+        for (let col = 0; col < this.blockShape.length; col++) {
+            let tempRow = [];
+            for (let row = this.blockShape.length - 1; row >= 0; row--) {
+                tempRow.push(this.blockShape[row][col]);
+            }
+            temp.push(tempRow);
+        }
+        this.blockShape = temp;
+    }
+
+    rotateAntiClockwise() {
+        let temp = [];
+
+        for (let col = this.blockShape.length - 1; col >= 0; col--) {
+            let tempRow = [];
+            for (let row = 0; row < this.blockShape.length; row++) {
+                tempRow.push(this.blockShape[row][col]);
+            }
+            temp.push(tempRow);
+        }
+        this.blockShape = temp;
     }
 
     getBlockInfo() {
-        return { x: this.x, y: this.y, blockType: this.blockType };
+        return {
+            x: this.x,
+            y: this.y,
+            blockType: this.blockType,
+            blockShape: this.blockShape,
+        };
     }
 }
 

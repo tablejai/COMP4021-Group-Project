@@ -1,7 +1,7 @@
 class Block {
-    constructor(blockType, x, y) {
+    constructor(blockType, blockShape, x, y) {
         this.blockType = blockType;
-        this.blockShape = BLOCK_SHAPES[this.blockType];
+        this.blockShape = blockShape;
 
         this.x = x;
         this.y = y;
