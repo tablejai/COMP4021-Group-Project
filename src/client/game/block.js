@@ -8,6 +8,7 @@ class Block {
     }
 
     draw() {
+        strokeWeight(BORDER_SIZE);
         const topLeftX =
             floor(windowWidth / 2) -
             floor((CELL_SIZE * BOARD_WIDTH) / 2 + BORDER_SIZE);

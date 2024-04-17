@@ -3,6 +3,12 @@ const FRAME_RATE = 100;
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
 
+const BORDER_SIZE = 3;
+const CELL_SIZE = 35;
+
+const OPPONENT_BOARD_BORDER_SIZE = 1;
+const OPPONENT_BOARD_CELL_SIZE = 12;
+
 const COLOR_CODES = {
     CYAN: [0, 255, 255],
     YELLOW: [255, 255, 0],
@@ -61,9 +67,6 @@ const BLOCK_SHAPES = {
         [null, null, null],
     ],
 };
-
-const BORDER_SIZE = 3;
-const CELL_SIZE = 35;
 
 // A hacky way of letting the frontend use the backend constants
 if (

@@ -1,18 +1,21 @@
 function setup() {
-    board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
+    board = new Board(BOARD_WIDTH, BOARD_HEIGHT, false, "MAIN");
     currentBlock = new Block("Z", 100, 100);
 
-    let canvasWidth = board.cellSize * BOARD_WIDTH + board.borderSize * 2;
-    let canvasHeight = board.cellSize * BOARD_HEIGHT + board.borderSize * 2;
-
     createCanvas(windowWidth, windowHeight);
+    BOARD_PLACEMENT.autoCompute();
 }
 
+var opponentBoards = {};
 function draw() {
     board.draw();
+    for (var opponentBoard in opponentBoards) {
+        opponentBoards[opponentBoard].draw();
+    }
     currentBlock.draw();
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+    BOARD_PLACEMENT.autoCompute();
 }

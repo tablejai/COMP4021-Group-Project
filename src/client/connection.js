@@ -4,17 +4,19 @@ socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
 socket.on("gameover", handleGameover);
 
-playerID = null;
+var myPlayerID = null;
 
 function handleInit(msg) {
-    playerID = JSON.parse(msg["playerID"]);
-    console.log(playerID);
+    myPlayerID = parseInt(JSON.parse(msg["playerID"]));
+    console.log(myPlayerID);
 }
 
 function parseGameStateData(gameState) {
     gameState = JSON.parse(gameState);
 
-    if (gameState["playerID"] == parseInt(playerID)) {
+    const currentPlayerID = gameState["playerID"];
+
+    if (currentPlayerID == myPlayerID) {
         board.boardState = gameState["board"];
         currentBlock = new Block(
             gameState["currentBlock"]["blockType"],
@@ -22,6 +24,18 @@ function parseGameStateData(gameState) {
             gameState["currentBlock"]["x"],
             gameState["currentBlock"]["y"]
         );
+    } else {
+        if (!(currentPlayerID in opponentBoards)) {
+            opponentBoards[currentPlayerID] = new Board(
+                BOARD_WIDTH,
+                BOARD_HEIGHT,
+                true,
+                BOARD_PLACEMENT.getPlacementFromIndex(
+                    Object.keys(opponentBoards).length
+                )
+            );
+        }
+        opponentBoards[currentPlayerID].boardState = gameState["board"];
     }
 }
 
