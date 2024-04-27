@@ -1,4 +1,5 @@
 export const PORT = 9000;
+export const NUM_SUPPORTED_PLAYERS = 9;
 
 export const FRAME_RATE = 100;
 
