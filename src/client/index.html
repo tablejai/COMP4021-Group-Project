@@ -41,7 +41,7 @@
               />
             </div>
             <button type="submit">Sign in</button>
-            <p id="signin-message"></p>
+            <p id="signin-message" class="auth-message"></p>
           </form>
           <div class="separator"></div>
           <form id="signup-form" class="form">
@@ -78,8 +78,19 @@
               />
             </div>
             <button type="submit">Sign up</button>
-            <p id="signup-message"></p>
+            <p id="signup-message" class="auth-message"></p>
           </form>
+        </div>
+      </div>
+      <div id="lobby-overlay" class="overlay hidden">
+        <div class="container col align-center">
+          <h2>Choose a room to join</h2>
+          <div id="room-list" class="col">
+            <!-- populate buttons for each room by js -->
+          </div>
+          <!-- <button id="create-room">Create a room</button> -->
+          <!-- future work -->
+          <button type="button" id="lobby-signout">Sign Out</button>
         </div>
       </div>
     </main>

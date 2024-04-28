@@ -2,5 +2,9 @@
   "Leo": {
     "password": "$2b$09$8DpLlJVvuCF1JHbnzij5HOWK66XRo55KVZBusMIr6DU3eGZXnf0DS",
     "id": "e95cc2ad-fab8-4c9d-b1f5-46bd33b140f4"
+  },
+  "Leo2": {
+    "password": "$2b$09$IPtztSsTV4VrcNVzfvkwleou4UyW3P0UPD3VoklUivJBD6MCcRauu",
+    "id": "818dfab5-9a0f-46d5-ac08-c7645a066677"
   }
 }

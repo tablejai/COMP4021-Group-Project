@@ -14,12 +14,29 @@ export default function Connection(user) {
   socket.on("connect", () => {
     console.log("connected");
     socket.emit("get roomList");
+    const lobbyOverlay = document.querySelector("#lobby-overlay");
+    lobbyOverlay.classList.remove("hidden");
   });
 
   socket.on("room list", (roomList) => {
     console.log(roomList);
 
     // update room list ui
+    const roomListDiv = document.querySelector("#room-list");
+    const rooms = Object.values(roomList).map(({ name, players, size }) => {
+      const room = document.createElement("div");
+      room.classList.add("room");
+      room.innerHTML = `
+        <span class="room-name">${name}</span>
+        <p>Players: ${players.length}/${size}</p>
+      `;
+      room.addEventListener("click", () => {
+        socket.emit("join room", name);
+      });
+      return room;
+    });
+
+    roomListDiv.replaceChildren(...rooms);
   });
 
   socket.on("init", ({ room }) => {

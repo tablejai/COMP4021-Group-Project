@@ -1,8 +1,11 @@
 import Connection from "./connection.js";
 
 const authOverlay = document.querySelector("#auth-overlay");
+const lobbyOverlay = document.querySelector("#lobby-overlay");
 const signInForm = document.querySelector("#signin-form");
 const singUpForm = document.querySelector("#signup-form");
+const lobbySignOut = document.querySelector("#lobby-signout");
+
 let connection = null;
 
 const signIn = async (username, password) => {
@@ -44,11 +47,15 @@ const validate = async () => {
     });
 };
 
+const signOut = async () => {
+  return await fetch("/signout").then((res) => res.json());
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
   if (await validate()) {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     connection = Connection(user);
-    authOverlay.style.display = "none";
+    authOverlay.classList.add("hidden");
   }
 });
 
@@ -60,9 +67,9 @@ signInForm.addEventListener("submit", (e) => {
 
   signIn(formData.get("username"), formData.get("password")).then((data) => {
     if (data.status === "success") {
-      localStorage.setItem("user", JSON.stringify(data.user));
+      sessionStorage.setItem("user", JSON.stringify(data.user));
       connection = Connection(data.user);
-      authOverlay.style.display = "none";
+      authOverlay.classList.add("hidden");
     } else {
       // report error
       message.textContent = data.error;
@@ -82,6 +89,20 @@ singUpForm.addEventListener("submit", (e) => {
     } else {
       // report error
       message.textContent = data.error;
+    }
+  });
+});
+
+lobbySignOut.addEventListener("click", () => {
+  signOut().then((data) => {
+    if (data.status === "success") {
+      sessionStorage.removeItem("user");
+      authOverlay.classList.remove("hidden");
+      lobbyOverlay.classList.add("hidden");
+      document.querySelectorAll(".auth-message").forEach((el) => {
+        el.textContent = "";
+      });
+      connection.disconnect();
     }
   });
 });

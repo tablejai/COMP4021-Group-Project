@@ -116,7 +116,7 @@ app.get("/validate", (req, res) => {
   }
 });
 
-app.post("/signout", (req, res) => {
+app.get("/signout", (req, res) => {
   req.session.destroy();
   res.json({ status: "success" });
 });
