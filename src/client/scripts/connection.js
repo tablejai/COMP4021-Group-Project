@@ -1,4 +1,39 @@
-const socket = io();
+export default function Connection(user) {
+  const socket = io();
+
+  const { id, username } = user;
+
+  const connect = () => {
+    socket.connect();
+  };
+
+  const disconnect = () => {
+    socket.disconnect();
+  };
+
+  socket.on("connect", () => {
+    console.log("connected");
+  });
+
+  socket.on("room list", (roomList) => {
+    console.log(roomList);
+
+    // update room list ui
+  });
+
+  socket.on("init", ({ room }) => {
+    console.log(room);
+  });
+
+  socket.on("add player", (player) => {
+    console.log("Add player", player);
+  });
+
+  return {
+    connect,
+    disconnect,
+  };
+}
 
 // socket.on("init", handleInit);
 // socket.on("gameState", handleGameState);

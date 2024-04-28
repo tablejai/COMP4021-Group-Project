@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import fs from "node:fs";
 import path from "node:path";
 
-import { PORT, FRAME_RATE, NUM_SUPPORTED_PLAYERS } from "../shared/constants.js";
+import { PORT, FRAME_RATE, ROOM_SIZE } from "../shared/constants.js";
 import { Game } from "./game/game.js";
 import session from "express-session";
 import { randomUUID } from "crypto";
@@ -27,19 +27,22 @@ const playerSession = session({
 });
 app.use(playerSession);
 
-app.post("/join", (req, res) => {
+app.post("/signin", (req, res) => {
   const { username } = req.body;
 
-  req.session.user = { username, id: randomUUID() };
+  const user = { id: randomUUID(), username };
+  req.session.user = user;
   res.json({ status: "success", user });
 });
+
+app.post("/signup", (req, res) => {});
 
 // Keep user in the room on refresh
 app.get("/validate", (req, res) => {
   if (req.session.user) {
     res.json({ status: "success", user: req.session.user });
   } else {
-    res.json({ status: "error" });
+    res.json({ status: "error", error: "user not logged in" });
   }
 });
 
@@ -48,65 +51,99 @@ app.post("/leave", (req, res) => {
   res.json({ status: "success" });
 });
 
-// TODO: Make a class to store the multiplayer game
-
-const roomName = "room 1";
-const rooms = {
-  [roomName]: {
-    name: roomName,
-    /**
-     * players: {
-     *  id: string
-     *  username: string
-     *  status: "ready" | "playing" | "offline"
-     * }[]
-     */
-    players: [],
-    // and other metadata
-  },
-};
+const onlineUserIds = new Set();
+const rooms = Object.fromEntries(
+  ["Room 1", "Room 2", "Room 3"].map((roomName) => [
+    roomName,
+    {
+      name: roomName,
+      players: [],
+    },
+  ])
+);
+// const rooms = {
+//   [roomName]: {
+//     name: roomName,
+//     /**
+//      * players: {
+//      *  id: string
+//      *  username: string
+//      *  status: "ready" | "playing" | "offline"
+//      * }[]
+//      */
+//     players: [],
+//     // and other metadata
+//   },
+// };
 
 io.use((socket, next) => {
   playerSession(socket.request, {}, next);
 });
 
 io.on("connection", (socket) => {
-  const { user } = socket.request.session;
+  const { user, roomName } = socket.request.session;
 
   if (!user) {
     socket.disconnect(true);
     return;
   }
 
-  // if room is full, disconnect and redirect to lobby with reason
-  if (io.sockets.adapter.rooms.get(roomName).size >= NUM_SUPPORTED_PLAYERS) {
-    socket.emit("room full", { reason: "room is full" });
-    socket.disconnect(true);
-    return;
-  }
+  onlineUserIds.add(user.id);
 
   // if user was already in the room, join the room again
-  if (rooms[socket.request.session.room]?.players.map((p) => p.id).includes(user.id)) {
-    socket.join(socket.request.session.room);
+  // TODO: check if game in that room is over
+  if (roomName && rooms[roomName]?.players.map((p) => p.id).includes(user.id)) {
+    socket.leave("lobby");
+    socket.join(roomName);
+    socket.emit("player online", user);
   } else {
-    // join room as a new player (currently only one room is supported)
+    socket.join("lobby");
+  }
+
+  socket.onAny((eventName, ...args) => {
+    switch (eventName) {
+      case "add player":
+      case "remove player":
+        // update users in lobby about the room list
+        io.to("lobby").emit("room list", rooms);
+        break;
+    }
+  });
+
+  socket.on("join room", (roomName) => {
+    if (!rooms[roomName]) {
+      socket.emit("room error", { reason: "room not found" });
+      return;
+    }
+    // if room is full, disconnect and redirect to lobby with reason
+    if ((rooms[roomName]?.players.length ?? 0) >= ROOM_SIZE) {
+      socket.emit("room error", { reason: "room is full" });
+      return;
+    }
+
+    // join room as a new player
+    socket.leave("lobby");
     socket.join(roomName);
     rooms[roomName].players.push({ ...user, status: "ready" });
     socket.request.session.room = roomName;
+
+    // emit initial game data
     socket.emit("init", { room: rooms[roomName] });
-    io.to(roomName).emit("add player", { user });
-  }
+    io.to(roomName).emit("add player", user);
+  });
 
   socket.on("get room", () => {
-    socket.emit("room", { room: rooms[roomName] });
+    socket.emit("room", rooms[socket.request.session.roomName]);
   });
 
   socket.on("leave room", () => {
+    const roomName = socket.request.session.roomName;
     socket.leave(roomName);
+    socket.join("lobby");
+
     rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== user.id);
-    socket.request.session.room = null;
-    socket.request.session.destroy();
-    io.to(roomName).emit("remove player", { user });
+    socket.request.session.roomName = null;
+    io.to(roomName).emit("remove player", user);
   });
 
   socket.on("disconnect", () => {
@@ -114,10 +151,9 @@ io.on("connection", (socket) => {
     if (player) {
       player.status = "offline";
     }
-    io.to(roomName).emit("player offline", { user });
+    onlineUserIds.delete(user.id);
+    io.to(roomName).emit("player offline", user);
   });
-
-  // check
 });
 
 // io.on("connection", (client) => {
