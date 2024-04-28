@@ -4,16 +4,22 @@ function setup() {
 
     createCanvas(windowWidth, windowHeight);
     BOARD_PLACEMENT.autoCompute();
-    showGameOverScreen();
+
 }
 
 var opponentBoards = {};
 function draw() {
+    // if (!isGameEnd) {
+    // if(!isGameOver)
     board.draw();
     for (var opponentBoard in opponentBoards) {
         opponentBoards[opponentBoard].draw();
     }
     currentBlock.draw();
+    // }
+    // else
+    // showGameOverScreen();
+    // showLoseScreen();
 }
 
 function windowResized() {
@@ -21,8 +27,7 @@ function windowResized() {
     BOARD_PLACEMENT.autoCompute();
 }
 
-
-function gameOver(score, timePlayed, players) {
+function gameEnd(score, timePlayed, players) {
     document.getElementById('score').textContent = 'Score: ' + score;
     document.getElementById('time-played').textContent = 'Time Played: ' + timePlayed;
     var rankingsTable = document.getElementById('rankings');
@@ -37,9 +42,13 @@ function gameOver(score, timePlayed, players) {
         row.insertCell().textContent = player.score;
         row.insertCell().textContent = player.timePlayed;
     });
+    document.getElementById('game-end').style.display = 'flex';//?
+}
+
+function showLoseScreen() {
     document.getElementById('game-over').style.display = 'flex';
 }
 
 function showGameOverScreen() {
-    document.getElementById('game-over').style.display = 'flex';
+    document.getElementById('game-end').style.display = 'flex';
 }

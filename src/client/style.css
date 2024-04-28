@@ -15,8 +15,17 @@ td, th {
     padding: 10px;
     background-color: rgba(110, 110, 220, 0.5);
 }
+#game-over{
+    color:red;
+    display:none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size:larger;
+}
 
-#game-over {
+#game-end {
     position: absolute;
     top: 0;
     left: 0;
@@ -25,7 +34,7 @@ td, th {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     font-size: 2em;
-    display: flex;
+    display: none;
     justify-content:space-around;
     align-items:center;
     flex-direction: row;

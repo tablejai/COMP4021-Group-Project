@@ -2,7 +2,7 @@ const socket = io("http://localhost:9000", { transports: ["websocket"] });
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
-socket.on("gameover", handleGameover);
+socket.on("gameOver", handleGameover);
 
 var myPlayerID = null;
 
