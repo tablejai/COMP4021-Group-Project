@@ -2,9 +2,13 @@ import { Board } from "./board.js";
 import { Block } from "./block.js";
 
 export class Game {
-  constructor(playerID, roomName) {
-    this.roomName = roomName;
-    this.playerID = playerID; // Expect to be a list of players
+  /**
+   *
+   * @param {import("../../server/index.js").Room} room
+   */
+  constructor(room) {
+    this.roomName = room.name;
+    this.playerID = room.players.map((p) => p.id); // Expect to be a list of players
     this.currentBlock = null;
     this.board = new Board(10, 20);
   }

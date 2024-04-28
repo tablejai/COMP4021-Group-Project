@@ -4,9 +4,8 @@
     <meta charset="UTF-8" />
     <title>Tetris 9</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.sound.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/addons/p5.sound.min.js"></script>
 
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -16,6 +15,9 @@
       <a href="/" id="title"> <h1>Tetris 9</h1></a>
     </header>
     <main>
+      <div id="p5-sketch" class="sketch">
+        <!-- p5 instance will be created here -->
+      </div>
       <div id="auth-overlay" class="overlay">
         <div class="row container">
           <form id="signin-form" class="form">
@@ -41,7 +43,7 @@
               />
             </div>
             <button type="submit">Sign in</button>
-            <p id="signin-message" class="auth-message"></p>
+            <p id="signin-message" class="message"></p>
           </form>
           <div class="separator"></div>
           <form id="signup-form" class="form">
@@ -78,7 +80,7 @@
               />
             </div>
             <button type="submit">Sign up</button>
-            <p id="signup-message" class="auth-message"></p>
+            <p id="signup-message" class="message"></p>
           </form>
         </div>
       </div>
@@ -91,6 +93,7 @@
           <!-- <button id="create-room">Create a room</button> -->
           <!-- future work -->
           <button type="button" id="lobby-signout">Sign Out</button>
+          <p id="lobby-message" class="message"></p>
         </div>
       </div>
     </main>

@@ -99,7 +99,7 @@ lobbySignOut.addEventListener("click", () => {
       sessionStorage.removeItem("user");
       authOverlay.classList.remove("hidden");
       lobbyOverlay.classList.add("hidden");
-      document.querySelectorAll(".auth-message").forEach((el) => {
+      document.querySelectorAll(".message").forEach((el) => {
         el.textContent = "";
       });
       connection.disconnect();
