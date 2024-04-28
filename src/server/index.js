@@ -27,15 +27,85 @@ const playerSession = session({
 });
 app.use(playerSession);
 
-app.post("/signin", (req, res) => {
-  const { username } = req.body;
+function containAlphaNumericOnly(str) {
+  return /^[a-zA-Z0-9_]+$/.test(str);
+}
 
-  const user = { id: randomUUID(), username };
-  req.session.user = user;
-  res.json({ status: "success", user });
+app.post("/signup", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.json({
+      status: "error",
+      error: "Username and password should not be empty",
+    });
+  }
+
+  if (!containAlphaNumericOnly(username)) {
+    return res.json({
+      status: "error",
+      error: "Username should only contain alphanumeric characters and underscores",
+    });
+  }
+
+  const users = JSON.parse(
+    fs.readFileSync(path.join(import.meta.dirname, "data/users.json"), "utf-8")
+  );
+
+  if (users[username]) {
+    return res.json({
+      status: "error",
+      error: "Username already exists",
+    });
+  }
+
+  const hash = bcrypt.hashSync(password, 9);
+  users[username] = { password: hash, id: randomUUID() };
+  fs.writeFileSync(
+    path.join(import.meta.dirname, "data/users.json"),
+    JSON.stringify(users, null, 2)
+  );
+
+  res.json({ status: "success" });
 });
 
-app.post("/signup", (req, res) => {});
+app.post("/signin", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.json({
+      status: "error",
+      error: "Username and password should not be empty",
+    });
+  }
+
+  if (!containAlphaNumericOnly(username)) {
+    return res.json({
+      status: "error",
+      error: "Username should only contain alphanumeric characters and underscores",
+    });
+  }
+
+  const users = JSON.parse(
+    fs.readFileSync(path.join(import.meta.dirname, "data/users.json"), "utf-8")
+  );
+  if (!(username in users)) {
+    return res.json({
+      status: "error",
+      error: "Invalid username/password",
+    });
+  }
+
+  if (!bcrypt.compareSync(password, users[username].password)) {
+    return res.json({
+      status: "error",
+      error: "Invalid username/password",
+    });
+  }
+
+  req.session.user = { username, id: users[username].id };
+  res.json({ status: "success", user: { username, id: users[username].id } });
+});
 
 // Keep user in the room on refresh
 app.get("/validate", (req, res) => {
@@ -46,35 +116,28 @@ app.get("/validate", (req, res) => {
   }
 });
 
-app.post("/leave", (req, res) => {
+app.post("/signout", (req, res) => {
   req.session.destroy();
   res.json({ status: "success" });
 });
 
 const onlineUserIds = new Set();
+
+/**
+ * @typedef {{ id: string, username: string, status: "ready" | "playing" | "offline" }} Player
+ * @typedef {{ name: string, players: Player[], size: number }} Room
+ * @type {Record<"Room 1" | "Room 2" | "Room 3", Room>}
+ */
 const rooms = Object.fromEntries(
   ["Room 1", "Room 2", "Room 3"].map((roomName) => [
     roomName,
     {
       name: roomName,
       players: [],
+      size: ROOM_SIZE,
     },
   ])
 );
-// const rooms = {
-//   [roomName]: {
-//     name: roomName,
-//     /**
-//      * players: {
-//      *  id: string
-//      *  username: string
-//      *  status: "ready" | "playing" | "offline"
-//      * }[]
-//      */
-//     players: [],
-//     // and other metadata
-//   },
-// };
 
 io.use((socket, next) => {
   playerSession(socket.request, {}, next);
@@ -83,6 +146,7 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   const { user, roomName } = socket.request.session;
 
+  // user is not authenticated, disconnect
   if (!user) {
     socket.disconnect(true);
     return;
@@ -100,7 +164,8 @@ io.on("connection", (socket) => {
     socket.join("lobby");
   }
 
-  socket.onAny((eventName, ...args) => {
+  socket.onAnyOutgoing((eventName, ...args) => {
+    console.log(eventName, args);
     switch (eventName) {
       case "add player":
       case "remove player":
@@ -136,6 +201,10 @@ io.on("connection", (socket) => {
     socket.emit("room", rooms[socket.request.session.roomName]);
   });
 
+  socket.on("get roomList", () => {
+    socket.emit("room list", rooms);
+  });
+
   socket.on("leave room", () => {
     const roomName = socket.request.session.roomName;
     socket.leave(roomName);
@@ -147,12 +216,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    const player = rooms[roomName].players.find((p) => p.id === user.id);
+    const player = rooms[roomName]?.players.find((p) => p.id === user.id);
     if (player) {
       player.status = "offline";
+      io.to(roomName).emit("player offline", user);
     }
+
     onlineUserIds.delete(user.id);
-    io.to(roomName).emit("player offline", user);
   });
 });
 

@@ -13,6 +13,7 @@ export default function Connection(user) {
 
   socket.on("connect", () => {
     console.log("connected");
+    socket.emit("get roomList");
   });
 
   socket.on("room list", (roomList) => {

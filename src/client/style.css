@@ -1,5 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Inter:wght@400;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
+  font-family: "Geologica", "Inter", sans-serif;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -32,13 +39,38 @@ main {
   align-items: center;
 }
 
-#join-room-form {
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.separator {
+  margin: 1rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  background-color: skyblue;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.form {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  gap: 1rem;
+  z-index: 2;
 }
 
 .form-input {
@@ -46,4 +78,37 @@ main {
   flex-direction: column;
   width: 100%;
   gap: 0.5rem;
+}
+
+input {
+  padding: 4px 5px;
+  border: none;
+  appearance: none;
+  border-radius: 5px;
+}
+
+button:focus,
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 calc(1px) black;
+}
+
+input::placeholder {
+  color: gray;
+}
+
+.form button {
+  border: none;
+  padding: 15px 30px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.form button:hover,
+button:focus {
+  background-color: rgb(226, 225, 225);
+  /* box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.1); */
+  transition: box-shadow 0.2s;
 }
