@@ -18,16 +18,20 @@ export function Sketch(socket, user, room) {
     let opponentBoards = {};
 
     p.setup = function () {
-      const { width, height } = p5SketchDiv.getBoundingClientRect();
       board = new Board(BOARD_WIDTH, BOARD_HEIGHT, false, "MAIN");
       currentBlock = new Block("Z", 100, 100);
 
-      p.createCanvas(width, height);
+      p.createCanvas(p5SketchDiv.clientWidth, p5SketchDiv.clientHeight);
+      p.background(14, 23, 54);
       BOARD_PLACEMENT.autoCompute(p);
 
       // place socket handlers here
       socket.on("gameState", (gameState) => {
         parseGameStateData(gameState);
+      });
+
+      socket.on("leave game", () => {
+        p.remove(); // clear canvas
       });
     };
 
@@ -39,14 +43,10 @@ export function Sketch(socket, user, room) {
       currentBlock.draw(p);
     };
 
-    // p.windowResized = function () {
-    //   const { width, height } = p5SketchDiv.getBoundingClientRect();
-    //   const header = document.querySelector("header");
-    //   const { height: headerHeight } = header.getBoundingClientRect();
-    //   console.log(screen.height, headerHeight);
-    //   p.resizeCanvas(p.min(width, screen.width), p.min(height, screen.height - headerHeight));
-    //   BOARD_PLACEMENT.autoCompute(p);
-    // };
+    p.windowResized = function () {
+      p.resizeCanvas(p5SketchDiv.clientWidth, p5SketchDiv.clientHeight);
+      BOARD_PLACEMENT.autoCompute(p);
+    };
 
     function parseGameStateData(gameState) {
       const currentPlayerID = gameState["playerID"];

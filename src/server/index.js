@@ -157,15 +157,23 @@ io.on("connection", (socket) => {
   // if user was already in the room, join the room again
   // TODO: check if game in that room is over
   if (roomName && rooms[roomName]?.players.map((p) => p.id).includes(user.id)) {
+    console.l0g("leave lobby");
     socket.leave("lobby");
     socket.join(roomName);
     socket.emit("player online", user);
+    socket.emit("init", { room: rooms[roomName] });
   } else {
+    console.log(
+      "join lobby",
+      user,
+      roomName,
+      rooms[roomName]?.players.map((p) => p.id)
+    );
     socket.join("lobby");
   }
 
   socket.onAnyOutgoing((eventName, ...args) => {
-    console.log(eventName, args);
+    console.log("OUT: ", eventName, args);
     switch (eventName) {
       case "add player":
       case "remove player":
@@ -175,7 +183,12 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.onAny((eventName, ...args) => {
+    console.log("IN: ", eventName, args);
+  });
+
   socket.on("join room", (roomName) => {
+    console.log("join room", roomName);
     if (!rooms[roomName]) {
       socket.emit("room error", { reason: "room not found" });
       return;
@@ -190,7 +203,7 @@ io.on("connection", (socket) => {
     socket.leave("lobby");
     socket.join(roomName);
     rooms[roomName].players.push({ ...user, status: "ready" });
-    socket.request.session.room = roomName;
+    socket.request.session.roomName = roomName;
 
     // emit initial game data
     socket.emit("init", { room: rooms[roomName] });
@@ -207,11 +220,13 @@ io.on("connection", (socket) => {
 
   socket.on("leave room", () => {
     const roomName = socket.request.session.roomName;
+    console.log("leave room", roomName);
     socket.leave(roomName);
     socket.join("lobby");
 
     rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== user.id);
     socket.request.session.roomName = null;
+    socket.emit("leave game");
     io.to(roomName).emit("remove player", user);
   });
 

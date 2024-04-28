@@ -48,10 +48,17 @@ export default function Connection(user) {
   socket.on("init", ({ room }) => {
     console.log(room);
     const lobbyOverlay = document.querySelector("#lobby-overlay");
+    const leaveGame = document.querySelector("#header-leave");
     lobbyOverlay.classList.add("hidden");
+    leaveGame.classList.remove("hidden");
+    leaveGame.addEventListener("click", () => {
+      socket.emit("leave room");
+      lobbyOverlay.classList.remove("hidden");
+      leaveGame.classList.add("hidden");
+    });
 
     // render the p5 gameboard, handle game related handlers in sketch.js
-    new Sketch(socket, user, room);
+    Sketch(socket, user, room);
   });
 
   socket.on("add player", (player) => {

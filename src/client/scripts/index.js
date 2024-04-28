@@ -35,16 +35,7 @@ const signUp = async (username, password) => {
 };
 
 const validate = async () => {
-  return await fetch("/validate")
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.status === "success") {
-        return true;
-      } else {
-        console.warn(data.error);
-        return false;
-      }
-    });
+  return await fetch("/validate").then((res) => res.json());
 };
 
 const signOut = async () => {
@@ -52,11 +43,14 @@ const signOut = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (await validate()) {
-    const user = JSON.parse(sessionStorage.getItem("user"));
-    connection = Connection(user);
-    authOverlay.classList.add("hidden");
-  }
+  validate().then((data) => {
+    if (data.status === "success") {
+      connection = Connection(data.user);
+      authOverlay.classList.add("hidden");
+    } else {
+      console.warn(data.error);
+    }
+  });
 });
 
 signInForm.addEventListener("submit", (e) => {
@@ -67,7 +61,6 @@ signInForm.addEventListener("submit", (e) => {
 
   signIn(formData.get("username"), formData.get("password")).then((data) => {
     if (data.status === "success") {
-      sessionStorage.setItem("user", JSON.stringify(data.user));
       connection = Connection(data.user);
       authOverlay.classList.add("hidden");
     } else {
