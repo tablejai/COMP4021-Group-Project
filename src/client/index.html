@@ -15,6 +15,26 @@
 </head>
 
 <body>
+
+    <div id="game-over">
+        <div class="player-score">
+            <h1>Game Over</h1>
+            <p id="score">Score: </p>
+            <p id="time-played">Time Played: </p>
+            <button onclick="restartGame()" style="font-size: 20px;">Restart</button>
+        </div>
+        <div id="player-rankings">
+            <h1>Player Rankings</h1>
+            <table id="rankings">
+                <tr>
+                    <th>Name </th>
+                    <th>Score </th>
+                    <th>Time Played</th>
+                </tr>
+                <!-- Player rows will be added here by JavaScript -->
+            </table>
+        </div>
+    </div>
     <script src="game/boardPlacement.js"></script>
     <script src="game/block.js">
         var currentBlock = null;
