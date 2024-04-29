@@ -153,17 +153,11 @@ io.on("connection", (socket) => {
   // if user was already in the room, join the room again
   // TODO: check if game in that room is over
   if (roomName && rooms[roomName]?.players.map((p) => p.id).includes(user.id)) {
-    socket.leave("lobby");
     socket.join(roomName);
     socket.emit("player online", user);
     socket.emit("init", { room: rooms[roomName] });
   } else {
-    console.log(
-      "join lobby",
-      user,
-      roomName,
-      rooms[roomName]?.players.map((p) => p.id)
-    );
+    console.log("join lobby", user);
     socket.join("lobby");
   }
 
@@ -183,7 +177,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join room", (roomName) => {
-    console.log("join room", roomName);
     if (!rooms[roomName]) {
       socket.emit("room error", { reason: "room not found" });
       return;
