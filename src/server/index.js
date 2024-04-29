@@ -4,15 +4,18 @@ import { createServer } from "http";
 import bcrypt from "bcrypt";
 import fs from "node:fs";
 import path from "node:path";
-
+import { fileURLToPath } from "node:url";
 import { PORT, FRAME_RATE, ROOM_SIZE } from "../shared/constants.js";
 import { Game } from "./game/game.js";
 import session from "express-session";
 import { randomUUID } from "crypto";
 
+const __dirname = import.meta.dirname || fileURLToPath(new URL(".", import.meta.url));
+const __filename = import.meta.filename || fileURLToPath(import.meta.url);
+
 const app = express();
-app.use(express.static(path.join(import.meta.dirname, "../client")));
-app.use(express.static(path.join(import.meta.dirname, "../shared")));
+app.use(express.static(path.join(__dirname, "../client")));
+app.use(express.static(path.join(__dirname, "../shared")));
 app.use(express.json());
 
 const httpServer = createServer(app);
@@ -48,9 +51,7 @@ app.post("/signup", (req, res) => {
     });
   }
 
-  const users = JSON.parse(
-    fs.readFileSync(path.join(import.meta.dirname, "data/users.json"), "utf-8")
-  );
+  const users = JSON.parse(fs.readFileSync(path.join(__dirname, "data/users.json"), "utf-8"));
 
   if (users[username]) {
     return res.json({
@@ -61,10 +62,7 @@ app.post("/signup", (req, res) => {
 
   const hash = bcrypt.hashSync(password, 9);
   users[username] = { password: hash, id: randomUUID() };
-  fs.writeFileSync(
-    path.join(import.meta.dirname, "data/users.json"),
-    JSON.stringify(users, null, 2)
-  );
+  fs.writeFileSync(path.join(__dirname, "data/users.json"), JSON.stringify(users, null, 2));
 
   res.json({ status: "success" });
 });
@@ -86,9 +84,7 @@ app.post("/signin", (req, res) => {
     });
   }
 
-  const users = JSON.parse(
-    fs.readFileSync(path.join(import.meta.dirname, "data/users.json"), "utf-8")
-  );
+  const users = JSON.parse(fs.readFileSync(path.join(__dirname, "data/users.json"), "utf-8"));
   if (!(username in users)) {
     return res.json({
       status: "error",
@@ -231,6 +227,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    const roomName = socket.request.session.roomName;
+    console.log("disconnect", roomName);
     const player = rooms[roomName]?.players.find((p) => p.id === user.id);
     if (player) {
       player.status = "offline";
