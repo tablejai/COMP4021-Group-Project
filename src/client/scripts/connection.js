@@ -51,11 +51,11 @@ export default function Connection(user) {
     const leaveGame = document.querySelector("#header-leave");
     lobbyOverlay.classList.add("hidden");
     leaveGame.classList.remove("hidden");
-    leaveGame.addEventListener("click", () => {
+    leaveGame.onclick = () => {
       socket.emit("leave room");
       lobbyOverlay.classList.remove("hidden");
       leaveGame.classList.add("hidden");
-    });
+    };
 
     // render the p5 gameboard, handle game related handlers in sketch.js
     Sketch(socket, user, room);
