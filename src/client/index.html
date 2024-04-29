@@ -1,30 +1,115 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Tetris 9</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.sound.min.js"></script>
-    <script src="../shared/constants.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/addons/p5.sound.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
-    <script src="game/boardPlacement.js"></script>
-    <script src="game/block.js">
-        var currentBlock = null;
-        </script>
-    <script src="game/board.js">
-        var board = new Board(BOARD_WIDTH, BOARD_HEIGHT, false, "MAIN");
+  <body>
+    <header>
+      <h1 id="title">Tetris 9</h1>
+      <button id="header-leave" class="hidden">Leave Game</button>
+    </header>
+    <main>
+      <div id="p5-sketch" class="sketch">
+        <!-- p5 instance will be created here -->
+      </div>
+      <div id="auth-overlay" class="overlay">
+        <div class="row container">
+          <form id="signin-form" class="form">
+            <h2>Sign in with your account</h2>
+            <div class="form-input">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                autocomplete="username"
+              />
+            </div>
+            <div class="form-input">
+              <label for="new-password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+              />
+            </div>
+            <button type="submit">Sign in</button>
+            <p id="signin-message" class="message"></p>
+          </form>
+          <div class="separator"></div>
+          <form id="signup-form" class="form">
+            <h2>Sign up if you don't have one</h2>
+            <div class="form-input">
+              <label for="new-username">Username</label>
+              <input
+                type="text"
+                id="new-username"
+                name="username"
+                placeholder="Enter your username"
+                maxlength="10"
+                autocomplete="username"
+              />
+            </div>
+            <div class="form-input">
+              <label for="new-password">Password</label>
+              <input
+                type="password"
+                id="new-password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="new-password"
+              />
+            </div>
+            <div class="form-input">
+              <label for="password-confirm">Confirm Password</label>
+              <input
+                type="password"
+                id="password-confirm"
+                name="password-confirm"
+                placeholder="Enter your password again"
+                autocomplete="new-password"
+              />
+            </div>
+            <button type="submit">Sign up</button>
+            <p id="signup-message" class="message"></p>
+          </form>
+        </div>
+      </div>
+      <div id="lobby-overlay" class="overlay hidden">
+        <div class="container col align-center">
+          <h2>Choose a room to join</h2>
+          <div id="room-list" class="col">
+            <!-- populate buttons for each room by js -->
+          </div>
+          <!-- <button id="create-room">Create a room</button> -->
+          <!-- future work -->
+          <button type="button" id="lobby-signout">Sign Out</button>
+          <p id="lobby-message" class="message"></p>
+        </div>
+      </div>
+    </main>
+
+    <script src="/socket.io/socket.io.min.js"></script>
+    <script type="module" src="scripts/index.js"></script>
+    <!-- <script src="scripts/game/boardPlacement.js"></script>
+    <script src="scripts/game/block.js">
+      var currentBlock = null;
     </script>
-    <script src="game/sketch.js"></script>
-    <script src="connection.js"></script>
-    <script src="game/keyTyped.js"></script>
-</body>
-
+    <script src="scripts/game/board.js">
+      var board = new Board(BOARD_WIDTH, BOARD_HEIGHT, false, "MAIN");
+    </script>
+    <script type="module" src="scripts/game/sketch.js"></script>
+    <script src="scripts/connection.js"></script>
+    <script src="scripts/game/keyTyped.js"></script> -->
+  </body>
 </html>
