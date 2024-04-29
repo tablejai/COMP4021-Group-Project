@@ -153,7 +153,6 @@ io.on("connection", (socket) => {
   // if user was already in the room, join the room again
   // TODO: check if game in that room is over
   if (roomName && rooms[roomName]?.players.map((p) => p.id).includes(user.id)) {
-    console.l0g("leave lobby");
     socket.leave("lobby");
     socket.join(roomName);
     socket.emit("player online", user);
@@ -200,6 +199,7 @@ io.on("connection", (socket) => {
     socket.join(roomName);
     rooms[roomName].players.push({ ...user, status: "ready" });
     socket.request.session.roomName = roomName;
+    socket.request.session.save();
 
     // emit initial game data
     socket.emit("init", { room: rooms[roomName] });
@@ -217,12 +217,16 @@ io.on("connection", (socket) => {
   socket.on("leave room", () => {
     const roomName = socket.request.session.roomName;
     console.log("leave room", roomName);
+    if (!roomName) return;
+
     socket.leave(roomName);
     socket.join("lobby");
 
     rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== user.id);
     socket.request.session.roomName = null;
+    socket.request.session.save();
     socket.emit("leave game");
+    socket.emit("remove player", user);
     io.to(roomName).emit("remove player", user);
   });
 
