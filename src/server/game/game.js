@@ -1,5 +1,6 @@
 import { Board } from "./board.js";
 import { Block } from "./block.js";
+import { ROOM_SIZE } from "../../shared/constants.js";
 
 export class Game {
   /**
@@ -8,10 +9,17 @@ export class Game {
    */
   constructor(room) {
     this.roomName = room.name;
-    this.playerID = room.players.map((p) => p.id); // Expect to be a list of players
+    this.playerIds = room.players.map((p) => p.id); // Expect to be a list of players
     this.currentBlock = null;
     this.board = new Board(10, 20);
   }
+
+  updateRoom(room) {
+    this.roomName = room.name;
+    this.playerIds = room.players.map((p) => p.id);
+  }
+
+  endGame() {}
 
   getCurrentBlock() {
     return this.currentBlock;
@@ -49,56 +57,51 @@ export class Game {
 
   getGameState() {
     return {
-      playerID: this.playerID,
       board: this.board.getBoardState(),
       currentBlock: this.currentBlock.getBlockInfo(),
       timeLeft: 300,
     };
   }
 
-  addKeyHandlers(client) {
-    client.on("keyTyped", (keyTypedData) => {
-      this.keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
-    });
-  }
-
-  keyHandler(keyPressed) {
-    switch (keyPressed) {
-      case "a":
+  handleAction(action, payload) {
+    switch (action) {
+      case "LEFT":
         // Move Left
         this.currentBlock.moveLeft();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.moveRight();
         }
         break;
-      case "d":
+      case "RIGHT":
         // Move Right
         this.currentBlock.moveRight();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.moveLeft();
         }
         break;
-      case "q":
+      case "ROTANTI":
         // Rotate Anti-clockwise
         this.currentBlock.rotateAntiClockwise();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rotateClockwise();
         }
         break;
-      case "e":
+      case "ROT":
         // Rotate Clockwise
         this.currentBlock.rotateClockwise();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rotateAntiClockwise();
         }
         break;
-      case "s":
+      case "DOWN":
         // Falls
         this.currentBlock.fall();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rise();
         }
         break;
+      case "CHEAT":
+      // do something with payload
       default:
         break;
     }

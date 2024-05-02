@@ -135,6 +135,8 @@ const rooms = Object.fromEntries(
   ])
 );
 
+const games = Object.keys(rooms).map((roomName) => new Game(rooms[roomName]));
+
 io.use((socket, next) => {
   playerSession(socket.request, {}, next);
 });
@@ -194,6 +196,19 @@ io.on("connection", (socket) => {
     socket.request.session.roomName = roomName;
     socket.request.session.save();
 
+    // update game instance
+    games[roomName].updateRoom(rooms[roomName]);
+
+    // if all are ready, start the game
+    if (
+      rooms[roomName].players.length === ROOM_SIZE &&
+      rooms[roomName].players.every((p) => p.status === "ready")
+    ) {
+      games[roomName].start();
+      io.to(roomName).emit("game start");
+      io.to(roomName).emit("game state", games[roomName].getGameState());
+    }
+
     // emit initial game data
     socket.emit("init", { room: rooms[roomName] });
     io.to(roomName).emit("add player", user);
@@ -234,25 +249,23 @@ io.on("connection", (socket) => {
 
     onlineUserIds.delete(user.id);
   });
+
+  /**
+   * Game handlers from now on
+   */
+
+  // if SIZE number of players are ready, start the game
+  // should do this in game controller
+
+  socket.on("action", (action, payload) => {
+    const game = games[roomName];
+    game.handleAction(user.id, action, payload);
+  });
+
+  // I'm not sure if it is a good idea to constantly send game state to all players, the throughput might be too high
+  // another way is to send game state only when there is a change, while the client keeps track of the time
+  // on each action, the game will send a truth time to the client, and the client will calibrate its time
 });
-
-// io.on("connection", (client) => {
-//   // TODO: Emit some important information through the init connection
-//   // e.g. game version
-//   // TODO: Implement multiplayer by making use of playerID and roomID
-
-//   playerIDs.push(playerIDs.length);
-//   let playerID = playerIDs[playerIDs.length - 1];
-
-//   let roomName = "room 1";
-//   let game = new Game(playerID, roomName);
-//   game.addKeyHandlers(client);
-
-//   client.emit("init", { playerID: playerID });
-//   client.join(roomName);
-
-//   startGameInterval(client, game);
-// });
 
 function startGameInterval(client, game) {
   const intervalID = setInterval(() => {
