@@ -1,4 +1,4 @@
-import Connection from "./connection.js";
+import { Connection } from "./connection.js";
 
 const authOverlay = document.querySelector("#auth-overlay");
 const lobbyOverlay = document.querySelector("#lobby-overlay");
