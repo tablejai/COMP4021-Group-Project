@@ -1,6 +1,5 @@
-import { Sketch } from "./game/sketch.js";
 
-export default function Connection(user) {
+function Connection(user) {
   const socket = io();
 
   const connect = () => {
@@ -58,7 +57,7 @@ export default function Connection(user) {
     };
 
     // render the p5 gameboard, handle game related handlers in sketch.js
-    Sketch(socket, user, room);
+    // Sketch(socket, user, room);
   });
 
   socket.on("add player", (player) => {
@@ -70,3 +69,7 @@ export default function Connection(user) {
     disconnect,
   };
 }
+window.Connection = Connection;
+export { Connection };
+// const connection = new window.Connection(user);
+// connection.connect();
