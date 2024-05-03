@@ -271,6 +271,7 @@ io.on("connection", (socket) => {
 
 function startGameInterval(client, roomName, user) {
     let game = new Game(roomName, user);
+    game.addKeyHandlers(client);
     const intervalID = setInterval(() => {
         const rank = game.update();
         if (rank != -1) {
