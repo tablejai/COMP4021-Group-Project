@@ -192,3 +192,7 @@ button:focus {
 #grid-cell{
   border: 1px solid grey;
 }
+
+#auth-overlay{
+  display:none;
+}
