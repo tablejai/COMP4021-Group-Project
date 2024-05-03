@@ -189,8 +189,29 @@ button:focus {
   font-size: 1.5rem;
 }
 
-#grid-cell{
-  border: 1px solid grey;
+#grid{
+  margin:5px;
+}
+
+#game-container {
+  display: flex;
+  justify-content: space-evenly;
+  height:600px;
+  width:1000px;
+}
+
+.opponent-board-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 10px;
+  width: 320px; 
+}
+
+.opponent-board {
+  border: 1px solid #000;
+  margin: 5px;
+  justify-content: space-between;
 }
 
 /* #auth-overlay{

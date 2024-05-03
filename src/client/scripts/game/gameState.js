@@ -1,10 +1,11 @@
 import { Block } from "./block.js";
 import { Board } from "./board.js";
+import { BLOCK_SHAPES } from "../../constants.js";
 class GameState {
     constructor(numPlayers) {
         this.numPlayers = numPlayers;
-        this.myBoard = new Board();
-        this.myBlock = new Block();
+        this.myBoard = new Board("grid", 30);
+        this.myBlock = new Block("type", BLOCK_SHAPES["Z"], 0, 0);
 
         // These 2 to be dealt with
         this.myPlayerID = null;

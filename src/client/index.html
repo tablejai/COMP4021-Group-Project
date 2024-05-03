@@ -99,10 +99,30 @@
       </div>
     <!-- </main> -->
 
+  <script type="module" src="constants.js"></script>
   <script src="/socket.io/socket.io.min.js"></script>
   <script type="module" src="scripts/game/gameState.js"> </script>
   <script type="module" src="scripts/index.js"></script> 
-  <canvas id="grid" width="300" height="600"></canvas>
+  <!-- Opponent game boards on the left -->
+  <div id="game-container">
+    <div class="opponent-board-container">
+      <canvas class="opponent-board" id="opponent-board-1" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-2" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-3" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-4" width="140" height="280"></canvas>
+    </div>
+
+    <canvas id="grid" width="300" height="600"></canvas>
+
+    <!-- Opponent game boards on the right -->
+    <div class="opponent-board-container">
+      <canvas class="opponent-board" id="opponent-board-5" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-6" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-7" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-8" width="140" height="280"></canvas>
+    </div>
+  </div>
+
   <script type="module" src="scripts/game/board.js"> </script>
   <script type="module" src="scripts/game/block.js"> </script>
 
