@@ -15,8 +15,8 @@ function Connection(user) {
     };
 
     // key
-    window.addEventListener('keydown', function(event) {
-      keyTyped(socket, event.key);
+    window.addEventListener("keydown", function (event) {
+        keyTyped(socket, event.key);
     });
 
     socket.on("connect", () => {
@@ -75,6 +75,11 @@ function Connection(user) {
 
     socket.on("gameState", (gameState) => {
         currentGameState.parseGameState(gameState);
+    });
+
+    socket.on("gameover", (gameOver) => {
+        console.log("gameover");
+        currentGameState.myBoard.isGameOver = true;
     });
 
     socket.on("get room playerID", (playerID) => {

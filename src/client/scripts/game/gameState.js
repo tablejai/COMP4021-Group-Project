@@ -31,9 +31,10 @@ class GameState {
         const currentPlayerID = gameState["playerID"];
         if (!(currentPlayerID in this.opponentBoards)) {
             console.log("other players gameState received");
-            let boardId = `opponent-board-${Object.keys(this.opponentBoards).length + 1}`;
-            this.opponentBoards[currentPlayerID] = new Board(
-                boardId, 14);
+            let boardId = `opponent-board-${
+                Object.keys(this.opponentBoards).length + 1
+            }`;
+            this.opponentBoards[currentPlayerID] = new Board(boardId, 14);
         }
         this.opponentBoards[currentPlayerID].boardState = gameState["board"];
     }
@@ -54,7 +55,6 @@ class GameState {
         for (let boardID in this.opponentBoards) {
             this.opponentBoards[boardID].draw();
         }
-        // this.myBlock.draw();
     }
 }
 

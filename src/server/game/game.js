@@ -39,13 +39,16 @@ export class Game {
             if (!this.board.canAdd(this.currentBlock)) {
                 this.currentBlock.rise();
                 this.spawnNewBlock();
+                if (!this.board.canAdd(this.currentBlock)) {
+                    return "gameloss";
+                }
             }
         }
 
         // Clear Rows
         this.board.clearRows();
 
-        return 1;
+        return "success";
     }
 
     getGameState() {
@@ -60,6 +63,7 @@ export class Game {
     addKeyHandlers(client) {
         client.on("keyTyped", (keyTypedData) => {
             this.keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
+            console.log(keyTypedData);
         });
     }
 

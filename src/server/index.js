@@ -9,6 +9,7 @@ import { PORT, FRAME_RATE, ROOM_SIZE } from "../shared/constants.js";
 import { Game } from "./game/game.js";
 import session from "express-session";
 import { randomUUID } from "crypto";
+import { Stats } from "fs";
 
 const __dirname =
     import.meta.dirname || fileURLToPath(new URL(".", import.meta.url));
@@ -273,18 +274,19 @@ function startGameInterval(client, roomName, user) {
     let game = new Game(roomName, user);
     game.addKeyHandlers(client);
     const intervalID = setInterval(() => {
-        const rank = game.update();
-        if (rank != -1) {
-            // If haven't lose
-            io.to(game.roomName).emit(
-                "gameState",
-                JSON.stringify(game.getGameState())
-            );
-        } else {
-            // If have lost
-            io.to(game.roomID).emit("gameOver", { data: "idk man" });
-            clearInterval(intervalID);
+        const status = game.update();
+        switch (status) {
+            case "success":
+                break;
+            case "gameloss":
+                client.emit("gameover", { data: "gg simida" });
+                clearInterval(intervalID);
+                break;
         }
+        io.to(game.roomName).emit(
+            "gameState",
+            JSON.stringify(game.getGameState())
+        );
     }, 1000 / FRAME_RATE);
 }
 
