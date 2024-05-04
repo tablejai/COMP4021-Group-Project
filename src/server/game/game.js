@@ -56,7 +56,7 @@ export class Game {
         return {
             playerID: this.playerID,
             board: this.board.getBoardState(),
-            currentBlock: this.currentBlock.getBlockInfo(),
+            currentBlock: this.currentBlock?.getBlockInfo(),
             isLost: this.isLost,
         };
     }

@@ -1,3 +1,4 @@
+import { THREE_MINUTES } from "../../constants.js";
 import { GameState } from "./game/gameState.js";
 import { handleKeyPress } from "./game/interaction.js";
 
@@ -51,12 +52,18 @@ function Connection(user) {
         console.log(room);
         const lobbyOverlay = document.querySelector("#lobby-overlay");
         const leaveGame = document.querySelector("#header-leave");
+        const readyButton = document.querySelector("#ready-button");
         lobbyOverlay.classList.add("hidden");
         leaveGame.classList.remove("hidden");
         leaveGame.onclick = () => {
             socket.emit("leave room");
             lobbyOverlay.classList.remove("hidden");
             leaveGame.classList.add("hidden");
+        };
+        readyButton.classList.remove("hidden");
+        readyButton.onclick = () => {
+            socket.emit("ready");
+            readyButton.classList.add("hidden");
         };
 
         currentGameState = new GameState(user.id);
@@ -78,8 +85,17 @@ function Connection(user) {
         };
     });
 
-    socket.on("game states", (gameState) => {
-        currentGameState.parseGameStates(gameState);
+    socket.on("game states", (gameStates, timeLeft = THREE_MINUTES) => {
+        const timeLeftDiv = document.querySelector("#timer");
+        const min = Math.floor(timeLeft / 60 / 1000);
+        const sec = Math.floor(timeLeft / 1000) % 60;
+        const ms = Math.floor(timeLeft / 10) % 100;
+
+        // pad the numbers with 0
+        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${
+            ms < 10 ? `0${ms}` : ms
+        }`;
+        currentGameState.parseGameStates(gameStates);
     });
 
     socket.on("gameover", (gameOver) => {
