@@ -196,7 +196,7 @@ io.on("connection", (socket) => {
         // join room as a new player
         socket.leave("lobby");
         socket.join(roomName);
-        rooms[roomName].players.push({ ...user, status: "ready" }); // FIXME: change to idle
+        rooms[roomName].players.push({ ...user, status: "idle" });
         socket.request.session.roomName = roomName;
         socket.request.session.save();
 
@@ -206,20 +206,6 @@ io.on("connection", (socket) => {
         gameController.addGameOverHandler(user, () => {
             socket.emit("gameover", { data: "gg simida" });
         });
-
-        // if all are ready, start the game
-        if (
-            rooms[roomName].players.length === ROOM_SIZE &&
-            rooms[roomName].players.every((p) => p.status === "ready")
-        ) {
-            io.to(roomName).emit("game start");
-            gameController.startGameLoop((gameStates, timeLeft) => {
-                io.to(roomName).emit("game states", gameStates, timeLeft);
-            });
-            gameController.addEndGameHandler((reason) => {
-                io.to(roomName).emit("game end", reason);
-            });
-        }
 
         // emit initial room data
         socket.emit("init", { room: rooms[roomName] });
@@ -268,14 +254,16 @@ io.on("connection", (socket) => {
 
     socket.on("ready", () => {
         const roomName = socket.request.session.roomName;
+        rooms[roomName].players.find((p) => p.id === user.id).status = "ready";
         // if all are ready, start the game
         if (
             rooms[roomName].players.length === ROOM_SIZE &&
             rooms[roomName].players.every((p) => p.status === "ready")
         ) {
+            const gameController = gameControllers[roomName];
             io.to(roomName).emit("game start");
             gameController.startGameLoop((gameStates, timeLeft) => {
-                io.to(roomName).emit("game state", gameStates, timeLeft);
+                io.to(roomName).emit("game states", gameStates, timeLeft);
             });
             gameController.addEndGameHandler((reason) => {
                 io.to(roomName).emit("game end", reason);
