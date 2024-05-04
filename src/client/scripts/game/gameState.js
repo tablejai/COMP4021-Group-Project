@@ -52,20 +52,29 @@ class GameState {
 
     parseGameEndStates(gameStates) {
         document.getElementById('game-end').style.display = 'flex';
+        let player = null;
         gameStates.forEach((gameState) => {
             const playerID = gameState["playerID"];
             if (playerID == this.myPlayerID) {
                 console.log('My score:', gameState.score);
                 document.getElementById("score").textContent = `Score: ${gameState.score}`;
+                player = gameState["playerName"];
             }
             this.gameScore[gameState["playerName"]] = gameState.score;
         });
         const rankingsTable = document.getElementById('rankings');
         const sortedScores = Object.entries(this.gameScore).sort((a, b) => b[1] - a[1]);
+        let count = 1;
         sortedScores.forEach(([playerID, score]) => {
             const row = rankingsTable.insertRow();
+            row.insertCell().textContent = count++;
             row.insertCell().textContent = playerID;
             row.insertCell().textContent = score;
+            row.insertCell().textContent = score;
+            row.insertCell().textContent = score;
+            if (playerID == player) {
+                row.style.backgroundColor = "red";
+            }
         });
     }
 
