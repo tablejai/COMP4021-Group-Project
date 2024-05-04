@@ -108,6 +108,11 @@ export class Game {
                 // Cheat Mode: Clears the lowest row
                 this.board.clearBottomRow();
                 break;
+            case "spacebar":
+                while (this.board.canAdd(this.currentBlock)) {
+                    this.currentBlock.fall();
+                }
+                this.currentBlock.rise();
             default:
                 break;
         }

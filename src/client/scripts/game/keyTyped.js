@@ -19,9 +19,9 @@ export function keyTyped(socket, key) {
             break;
         case " ":
             emitMsg = { keyPressed: "spacebar" };
+            break;
         case "c":
             emitMsg = { keyPressed: "c" };
-            break;
             break;
         default:
             break;
