@@ -51,12 +51,18 @@ function Connection(user) {
         console.log(room);
         const lobbyOverlay = document.querySelector("#lobby-overlay");
         const leaveGame = document.querySelector("#header-leave");
+        const readyButton = document.querySelector("#ready-button");
         lobbyOverlay.classList.add("hidden");
         leaveGame.classList.remove("hidden");
         leaveGame.onclick = () => {
             socket.emit("leave room");
             lobbyOverlay.classList.remove("hidden");
             leaveGame.classList.add("hidden");
+        };
+        readyButton.classList.remove("hidden");
+        readyButton.onclick = () => {
+            socket.emit("ready");
+            readyButton.classList.add("hidden");
         };
 
         currentGameState = new GameState(user.id);
