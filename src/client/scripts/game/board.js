@@ -12,7 +12,15 @@ export class Board {
         this.isGameOver = false;
     }
 
+    updateBoard(board) {
+        this.boardState = board;
+    }
+
     draw() {
+        if (this.isGameOver) {
+            this.drawGameOver();
+            return;
+        }
         this.ctx.strokeStyle = "#888";
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
@@ -23,14 +31,21 @@ export class Board {
                 this.ctx.strokeRect(x, y, this.gridSize, this.gridSize);
             }
         }
-
-        if (this.isGameOver) {
-            this.drawGameOver();
-        }
     }
 
     drawGameOver() {
-        this.ctx.fillStyle = "black";
-        this.ctx.fillText("Game Over", 40, 300);
+        if (this.canvas.id === "grid") {
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText("Game Over", 40, 300);
+        } else {
+            this.canvas.style.filter = "brightness(0.5)";
+        }
+    }
+
+    clear() {
+        this.boardState = Array(20)
+            .fill(0)
+            .map(() => Array(10).fill("white"));
+        this.draw();
     }
 }

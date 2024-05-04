@@ -39,6 +39,7 @@ export class GameController {
     });
     callback(gameStates, timeLeft);
     if (timeLeft <= 0 || gameStates.every((game) => game.isLost)) {
+      clearInterval(this.intervalId);
       this.handleEndGame?.(timeLeft <= 0 ? "timeout" : "allLost");
     }
   }
