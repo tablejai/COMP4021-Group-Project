@@ -9,6 +9,7 @@ export class Game {
         this.board = new Board(10, 20);
         this.isLost = false;
         this.gameOverHandler = null;
+        this.clearRowHandler = null;
     }
 
     getCurrentBlock() {
@@ -23,8 +24,17 @@ export class Game {
         this.currentBlock = new Block(Block.getRandomBlockType());
     }
 
+    addGarbageRow(numGarbageRow) {
+        this.board.addGarbageRow(numGarbageRow);
+    }
+
     addGameOverHandler(callback) {
         this.gameOverHandler = callback.bind(this);
+    }
+
+    // Clunky name but nvm
+    addClearRowHandler(callback) {
+        this.clearRowHandler = callback;
     }
 
     update() {
@@ -49,7 +59,12 @@ export class Game {
         }
 
         // Clear Rows
-        this.board.clearRows();
+        const rowsCleared = this.board.clearRows();
+        if (rowsCleared > 0) {
+            // TODO: Figure out a more playable way for numGarbageRow to be determined
+            const numGarbageRow = rowsCleared;
+            this.clearRowHandler(this.playerID, numGarbageRow);
+        }
     }
 
     getGameState() {

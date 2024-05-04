@@ -42,19 +42,38 @@ export class Board {
     }
 
     clearRows() {
+        let rowsCleared = 0;
         for (let row = this.rows - 1; row >= 0; row--) {
             if (!this.boardState[row].includes(this.background)) {
                 this.boardState.splice(row, 1);
                 this.boardState.unshift(
                     new Array(this.cols).fill(this.background)
                 );
+                rowsCleared++;
             }
         }
+        return rowsCleared;
     }
 
     clearBottomRow() {
         this.boardState.splice(this.rows - 1, 1);
         this.boardState.unshift(new Array(this.cols).fill(this.background));
+    }
+
+    addGarbageRow(numGarbageRow) {
+        // TODO: Check whether the game will end if garbage row is added.
+        // This version will fail if the next block being placed is not considered
+        // as gameover, even if the blocks placed should have exceeded.
+
+        this.boardState.splice(0, numGarbageRow);
+
+        const colIndexForHole = Math.floor(Math.random() * this.cols);
+        let garbageRow = Array(10).fill("gray");
+        garbageRow[colIndexForHole] = "white";
+
+        for (let i = 0; i < numGarbageRow; i++) {
+            this.boardState.push(garbageRow);
+        }
     }
 
     getBoardState() {
