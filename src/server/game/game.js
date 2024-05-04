@@ -122,6 +122,7 @@ export class Game {
                     this.currentBlock.fall();
                 }
                 this.currentBlock.rise();
+                this.spawnNewBlock();
                 break;
             case "CHEAT":
                 // Cheat Mode: Clears the lowest row
