@@ -21,6 +21,10 @@ export class GameController {
     return this.games[user.id].getGameState();
   }
 
+  getGameEndState(user) {
+    return this.games[user.id].getGameEndState();
+  }
+
   handleAction(user, action, payload) {
     this.games[user.id].handleAction(action, payload);
     // only change internal state, don't emit event after this
@@ -38,9 +42,12 @@ export class GameController {
       return game.getGameState();
     });
     callback(gameStates, timeLeft);
+    const gameEndStates = Object.values(this.games).map((game) => {
+      return game.getGameEndState();
+    });
     if (timeLeft <= 0 || gameStates.every((game) => game.isLost)) {
       clearInterval(this.intervalId);
-      this.handleEndGame?.(timeLeft <= 0 ? "timeout" : "allLost");
+      this.handleEndGame?.(gameEndStates);
     }
   }
 

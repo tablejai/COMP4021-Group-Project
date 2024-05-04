@@ -5,10 +5,12 @@ export class Game {
     constructor(roomName, user) {
         this.roomName = roomName;
         this.playerID = user.id;
+        this.playerName = user.username;
         this.currentBlock = null;
         this.board = new Board(10, 20);
         this.isLost = false;
         this.gameOverHandler = null;
+        this.score = 0;
     }
 
     getCurrentBlock() {
@@ -58,6 +60,14 @@ export class Game {
             board: this.board.getBoardState(),
             currentBlock: this.currentBlock?.getBlockInfo(),
             isLost: this.isLost,
+        };
+    }
+
+    getGameEndState() {
+        return {
+            playerID: this.playerID,
+            playerName: this.playerName,
+            score: this.score,
         };
     }
 

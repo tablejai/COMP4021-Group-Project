@@ -103,6 +103,12 @@ function Connection(user) {
         console.log("Game Over", gameOver);
     });
 
+    socket.on("game end", (gameState) => {
+        window.onkeydown = null;
+        console.log("Game end", gameState);
+        currentGameState.parseGameEndStates(gameState);
+    });
+
     return {
         connect,
         disconnect,

@@ -9,6 +9,7 @@ class GameState {
         // this.myBlock = new Block("type", BLOCK_SHAPES["Z"], 0, 0);
         this.myBlock = null;
         this.opponentBoards = {};
+        this.gameScore = {};
 
         this.clear();
     }
@@ -47,6 +48,25 @@ class GameState {
             else this.parseOthersGameState(gameState);
         });
         this.draw();
+    }
+
+    parseGameEndStates(gameStates) {
+        document.getElementById('game-end').style.display = 'flex';
+        gameStates.forEach((gameState) => {
+            const playerID = gameState["playerID"];
+            if (playerID == this.myPlayerID) {
+                console.log('My score:', gameState.score);
+                document.getElementById("score").textContent = `Score: ${gameState.score}`;
+            }
+            this.gameScore[gameState["playerName"]] = gameState.score;
+        });
+        const rankingsTable = document.getElementById('rankings');
+        const sortedScores = Object.entries(this.gameScore).sort((a, b) => b[1] - a[1]);
+        sortedScores.forEach(([playerID, score]) => {
+            const row = rankingsTable.insertRow();
+            row.insertCell().textContent = playerID;
+            row.insertCell().textContent = score;
+        });
     }
 
     draw() {

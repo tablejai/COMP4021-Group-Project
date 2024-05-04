@@ -155,6 +155,25 @@
                     ></canvas>
                 </div>
             </div>
+            <div id="game-end">
+                <div class="player-score">
+                    <h1>Game End</h1>
+                    <p id="score">Score: </p>
+                    <p id="time-played">Time Played: </p>
+                    <button onclick="restartGame()" style="font-size: 20px;">Restart</button>
+                </div>
+                <div id="player-rankings">
+                    <h1>Player Rankings</h1>
+                    <table id="rankings">
+                        <tr>
+                            <th>Name </th>
+                            <th>Score </th>
+                            <!-- <th>Time Played</th> -->
+                        </tr>
+                        <!-- Player rows will be added here by JavaScript -->
+                    </table>
+                </div>
+            </div>
         </main>
 
         <script src="/socket.io/socket.io.min.js"></script>

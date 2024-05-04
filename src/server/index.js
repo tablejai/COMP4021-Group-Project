@@ -203,9 +203,21 @@ io.on("connection", (socket) => {
         // update game instance
         const gameController = gameControllers[roomName];
         gameController.createGame(user);
-        gameController.addGameOverHandler(user, () => {
-            socket.emit("gameover", { data: "gg simida" });
-        });
+
+
+        // if all are ready, start the game
+        if (
+            rooms[roomName].players.length === ROOM_SIZE &&
+            rooms[roomName].players.every((p) => p.status === "ready")
+        ) {
+            io.to(roomName).emit("game start");
+            gameController.startGameLoop((gameStates, timeLeft) => {
+                io.to(roomName).emit("game states", gameStates, timeLeft);
+            });
+            gameController.addEndGameHandler((gameEndStates) => {
+                io.to(roomName).emit("game end", gameEndStates);
+            });
+        }
 
         // emit initial room data
         socket.emit("init", { room: rooms[roomName] });
@@ -265,10 +277,13 @@ io.on("connection", (socket) => {
             gameController.startGameLoop((gameStates, timeLeft) => {
                 io.to(roomName).emit("game states", gameStates, timeLeft);
             });
-            gameController.addEndGameHandler((reason) => {
-                io.to(roomName).emit("game end", reason);
+            gameController.addEndGameHandler((gameEndStates) => {
+                io.to(roomName).emit("game end", gameEndStates);
             });
 
+            gameController.addGameOverHandler(user, () => {
+                socket.emit("gameover", { data: "gg simida" });
+            });
             rooms[roomName].players.forEach((p) => (p.status = "playing"));
         }
         io.to(roomName).emit("game states", [gameController.getGameState(user)]);
