@@ -1,33 +1,20 @@
-export function keyTyped(socket, key) {
-    // TODO: Think if the emitMsg actually be like this
-    let emitMsg = null;
-    switch (key) {
-        case "a": // Pressed a
-            emitMsg = { keyPressed: "a" };
-            break;
-        case "d": // Pressed d
-            emitMsg = { keyPressed: "d" };
-            break;
-        case "q": // Pressed d
-            emitMsg = { keyPressed: "q" };
-            break;
-        case "e": // Pressed d
-            emitMsg = { keyPressed: "e" };
-            break;
-        case "s":
-            emitMsg = { keyPressed: "s" };
-            break;
-        case " ":
-            emitMsg = { keyPressed: "spacebar" };
-            break;
-        case "c":
-            emitMsg = { keyPressed: "c" };
-            break;
-        default:
-            break;
-    }
-
-    if (emitMsg != null) {
-        socket.emit("keyTyped", JSON.stringify(emitMsg));
-    }
+function handleKeyPress(key) {
+  switch (key) {
+    case "a": // move block to the left
+      return { action: "LEFT" };
+    case "d": // move block to the right
+      return { action: "RIGHT" };
+    case "q": // rotate block counter clockwise
+      return { action: "ROTANTI" };
+    case "e": // rotate block clockwise
+      return { action: "ROT" };
+    case "s":
+      return { action: "DOWN" };
+    case " ":
+      return { action: "DROP" };
+    case "c":
+      return { action: "CHEAT" };
+    default:
+      return {};
+  }
 }
