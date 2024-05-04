@@ -7,6 +7,8 @@ export class Game {
     this.playerID = user.id;
     this.currentBlock = null;
     this.board = new Board(10, 20);
+    this.isLost = false;
+    this.gameOverHandler = null;
   }
 
   getCurrentBlock() {
@@ -21,7 +23,12 @@ export class Game {
     this.currentBlock = new Block(Block.getRandomBlockType());
   }
 
+  addGameOverHandler(callback) {
+    this.gameOverHandler = callback.bind(this);
+  }
+
   update() {
+    if (this.isLost) return;
     // Spawn new blocks when there are no blocks
     if (this.currentBlock == null) {
       this.spawnNewBlock();
@@ -35,15 +42,14 @@ export class Game {
         this.currentBlock.rise();
         this.spawnNewBlock();
         if (!this.board.canAdd(this.currentBlock)) {
-          return "gameloss";
+          this.isLost = true;
+          this.gameOverHandler?.();
         }
       }
     }
 
     // Clear Rows
     this.board.clearRows();
-
-    return "success";
   }
 
   getGameState() {
@@ -51,47 +57,42 @@ export class Game {
       playerID: this.playerID,
       board: this.board.getBoardState(),
       currentBlock: this.currentBlock.getBlockInfo(),
-      timeLeft: 300,
+      isLost: this.isLost,
     };
   }
 
-  addKeyHandlers(client) {
-    client.on("keyTyped", (keyTypedData) => {
-      this.keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
-    });
-  }
-
-  keyHandler(keyPressed) {
-    switch (keyPressed) {
-      case "a":
+  handleAction(action, payload) {
+    if (this.isLost) return;
+    switch (action) {
+      case "LEFT":
         // Move Left
         this.currentBlock.moveLeft();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.moveRight();
         }
         break;
-      case "d":
+      case "RIGHT":
         // Move Right
         this.currentBlock.moveRight();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.moveLeft();
         }
         break;
-      case "q":
+      case "ROTANTI":
         // Rotate Anti-clockwise
         this.currentBlock.rotateAntiClockwise();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rotateClockwise();
         }
         break;
-      case "e":
+      case "ROT":
         // Rotate Clockwise
         this.currentBlock.rotateClockwise();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rotateAntiClockwise();
         }
         break;
-      case "s":
+      case "DOWN":
         // Falls
         this.currentBlock.fall();
         if (!this.board.canAdd(this.currentBlock)) {

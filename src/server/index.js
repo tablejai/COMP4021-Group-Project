@@ -7,9 +7,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PORT, FRAME_RATE, ROOM_SIZE } from "../shared/constants.js";
 import { Game } from "./game/game.js";
+import { GameController } from "./game/GameController.js";
 import session from "express-session";
 import { randomUUID } from "crypto";
-import { Stats } from "fs";
 
 const __dirname = import.meta.dirname || fileURLToPath(new URL(".", import.meta.url));
 const __filename = import.meta.filename || fileURLToPath(import.meta.url);
@@ -136,7 +136,7 @@ const rooms = Object.fromEntries(
   ])
 );
 
-const games = Object.keys(rooms).map((roomName) => new Game(rooms[roomName]));
+const gameControllers = Object.keys(rooms).map((roomName) => new GameController(roomName));
 
 io.use((socket, next) => {
   playerSession(socket.request, {}, next);
@@ -198,23 +198,29 @@ io.on("connection", (socket) => {
     socket.request.session.save();
 
     // update game instance
-    games[roomName].updateRoom(rooms[roomName]);
+    const gameController = gameControllers[roomName];
+    gameController.createGame(user);
+    gameController.addGameOverHandler(user, () => {
+      socket.emit("gameover", { data: "gg simida" });
+    });
 
     // if all are ready, start the game
     if (
       rooms[roomName].players.length === ROOM_SIZE &&
       rooms[roomName].players.every((p) => p.status === "ready")
     ) {
-      games[roomName].start();
       io.to(roomName).emit("game start");
-      io.to(roomName).emit("game state", games[roomName].getGameState());
+      gameController.startGameLoop((gameStates, timeLeft) => {
+        io.to(roomName).emit("game state", gameStates, timeLeft);
+      });
+      gameController.addEndGameHandler((reason) => {
+        io.to(roomName).emit("game end", reason);
+      });
     }
 
-    // emit initial game data
+    // emit initial room data
     socket.emit("init", { room: rooms[roomName] });
-    socket.emit("get room playerID", { playerID: user.id });
     io.to(roomName).emit("add player", user);
-    startGameInterval(socket, roomName, user);
   });
 
   socket.on("get room", () => {
@@ -257,12 +263,9 @@ io.on("connection", (socket) => {
    * Game handlers from now on
    */
 
-  // if SIZE number of players are ready, start the game
-  // should do this in game controller
-
   socket.on("action", (action, payload) => {
-    const game = games[roomName];
-    game.handleAction(user.id, action, payload);
+    const gameController = gameControllers[roomName];
+    gameController.handleAction(user.id, action, payload);
   });
 
   // I'm not sure if it is a good idea to constantly send game state to all players, the throughput might be too high
@@ -270,22 +273,22 @@ io.on("connection", (socket) => {
   // on each action, the game will send a truth time to the client, and the client will calibrate its time
 });
 
-function startGameInterval(client, roomName, user) {
-  let game = new Game(roomName, user);
-  game.addKeyHandlers(client);
-  const intervalID = setInterval(() => {
-    const status = game.update();
-    switch (status) {
-      case "success":
-        break;
-      case "gameloss":
-        client.emit("gameover", { data: "gg simida" });
-        clearInterval(intervalID);
-        break;
-    }
-    io.to(game.roomName).emit("gameState", JSON.stringify(game.getGameState()));
-  }, 1000 / FRAME_RATE);
-}
+// function startGameInterval(client, roomName, user) {
+//   let game = new Game(roomName, user);
+//   game.addKeyHandlers(client);
+//   const intervalID = setInterval(() => {
+//     const status = game.update();
+//     switch (status) {
+//       case "success":
+//         break;
+//       case "gameloss":
+//         client.emit("gameover", { data: "gg simida" });
+//         clearInterval(intervalID);
+//         break;
+//     }
+//     io.to(game.roomName).emit("gameState", JSON.stringify(game.getGameState()));
+//   }, 1000 / FRAME_RATE);
+// }
 
 httpServer.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

@@ -2,6 +2,7 @@ export const PORT = 9000;
 export const ROOM_SIZE = 9;
 
 export const FRAME_RATE = 100;
+export const THREE_MINUTES = 3 * 60 * 1000;
 
 export const BOARD_WIDTH = 10;
 export const BOARD_HEIGHT = 20;
