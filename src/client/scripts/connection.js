@@ -1,3 +1,4 @@
+import { THREE_MINUTES } from "../../constants.js";
 import { GameState } from "./game/gameState.js";
 import { handleKeyPress } from "./game/interaction.js";
 
@@ -84,8 +85,17 @@ function Connection(user) {
         };
     });
 
-    socket.on("game states", (gameState) => {
-        currentGameState.parseGameStates(gameState);
+    socket.on("game states", (gameStates, timeLeft = THREE_MINUTES) => {
+        const timeLeftDiv = document.querySelector("#timer");
+        const min = Math.floor(timeLeft / 60 / 1000);
+        const sec = Math.floor(timeLeft / 1000) % 60;
+        const ms = Math.floor(timeLeft / 10) % 100;
+
+        // pad the numbers with 0
+        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${
+            ms < 10 ? `0${ms}` : ms
+        }`;
+        currentGameState.parseGameStates(gameStates);
     });
 
     socket.on("gameover", (gameOver) => {
