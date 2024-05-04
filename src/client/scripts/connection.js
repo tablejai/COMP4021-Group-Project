@@ -1,10 +1,9 @@
 import { GameState } from "./game/gameState.js";
-import { keyTyped } from "./game/keyTyped.js";
-
-var currentGameState = new GameState();
+import { handleKeyPress } from "./game/interaction.js";
 
 function Connection(user) {
     const socket = io();
+    let currentGameState = null;
 
     const connect = () => {
         socket.connect();
@@ -13,11 +12,6 @@ function Connection(user) {
     const disconnect = () => {
         socket.disconnect();
     };
-
-    // key
-    window.addEventListener("keydown", function (event) {
-        keyTyped(socket, event.key);
-    });
 
     socket.on("connect", () => {
         console.log("connected");
@@ -65,24 +59,32 @@ function Connection(user) {
             leaveGame.classList.add("hidden");
         };
 
-        // render the p5 gameboard, handle game related handlers in sketch.js
-        // Sketch(socket, user, room);
+        currentGameState = new GameState(user.id);
     });
 
     socket.on("add player", (player) => {
         console.log("Add player", player);
     });
 
-    socket.on("gameState", (gameState) => {
-        currentGameState.parseGameState(gameState);
+    // game related events
+
+    socket.on("game start", () => {
+        window.onkeydown = (e) => {
+            if (e.isComposing || e.keyCode === 229) {
+                return;
+            }
+            const msg = handleKeyPress(e.key);
+            msg && socket.emit("action", msg);
+        };
+    });
+
+    socket.on("game states", (gameState) => {
+        currentGameState.parseGameStates(gameState);
     });
 
     socket.on("gameover", (gameOver) => {
-        currentGameState.myBoard.isGameOver = true;
-    });
-
-    socket.on("get room playerID", (playerID) => {
-        currentGameState.myPlayerID = playerID["playerID"];
+        window.onkeydown = null;
+        console.log("Game Over", gameOver);
     });
 
     return {
@@ -90,7 +92,4 @@ function Connection(user) {
         disconnect,
     };
 }
-window.Connection = Connection;
 export { Connection };
-// const connection = new window.Connection(user);
-// connection.connect();

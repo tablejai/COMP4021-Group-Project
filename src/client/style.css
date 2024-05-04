@@ -17,8 +17,6 @@ body {
 body {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .hidden {
@@ -189,15 +187,15 @@ button:focus {
   font-size: 1.5rem;
 }
 
-#grid{
-  margin:5px;
+#grid {
+  margin: 5px;
 }
 
 #game-container {
   display: flex;
   justify-content: space-evenly;
-  height:600px;
-  width:1000px;
+  height: 600px;
+  width: 1000px;
 }
 
 .opponent-board-container {
@@ -205,7 +203,7 @@ button:focus {
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 10px;
-  width: 320px; 
+  width: 320px;
 }
 
 .opponent-board {
