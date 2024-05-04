@@ -1,6 +1,6 @@
 import { Block } from "./block.js";
 import { Board } from "./board.js";
-import { BLOCK_SHAPES } from "../../constants.js";
+import { BlockPreview } from "./blockPreview.js";
 
 class GameState {
     constructor(playerId) {
@@ -8,6 +8,7 @@ class GameState {
         this.myBoard = new Board("grid", 30);
         // this.myBlock = new Block("type", BLOCK_SHAPES["Z"], 0, 0);
         this.myBlock = null;
+        this.preview = new BlockPreview();
         this.opponentBoards = {};
 
         this.clear();
@@ -17,6 +18,8 @@ class GameState {
         if (gameState.isLost) this.myBoard.isGameOver = true;
         // Parsing the board
         this.myBoard.updateBoard(gameState.board);
+
+        gameState.nextBlocks && this.preview.updateBlocks(gameState.nextBlocks);
 
         // Parsing the block
         const currentBlock = gameState["currentBlock"];
@@ -32,12 +35,12 @@ class GameState {
 
     parseOthersGameState(gameState) {
         const currentPlayerID = gameState["playerID"];
-        if (gameState.isLost) this.opponentBoards[currentPlayerID].isGameOver = true;
         if (!(currentPlayerID in this.opponentBoards)) {
             let boardId = `opponent-board-${Object.keys(this.opponentBoards).length + 1}`;
             this.opponentBoards[currentPlayerID] = new Board(boardId, 14);
         }
         this.opponentBoards[currentPlayerID].updateBoard(gameState["board"]);
+        if (gameState.isLost) this.opponentBoards[currentPlayerID].isGameOver = true;
     }
 
     parseGameStates(gameStates) {
@@ -51,13 +54,15 @@ class GameState {
 
     draw() {
         this.myBoard.draw();
-        this.myBlock?.draw();
+        this.myBlock?.draw(this.myBoard.ctx);
+        this.preview.draw();
         Object.values(this.opponentBoards).forEach((board) => {
             board.draw();
         });
     }
 
     clear() {
+        this.preview.clear();
         this.myBoard.clear();
         Object.values(this.opponentBoards).forEach((board) => {
             board.clear();

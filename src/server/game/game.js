@@ -6,6 +6,9 @@ export class Game {
         this.roomName = roomName;
         this.playerID = user.id;
         this.currentBlock = null;
+        this.nextBlocks = Array.from({ length: 3 }).map(
+            () => new Block(Block.getRandomBlockType())
+        );
         this.board = new Board(10, 20);
         this.isLost = false;
         this.gameOverHandler = null;
@@ -20,7 +23,8 @@ export class Game {
             this.board.addBlockToBoard(this.currentBlock);
         }
 
-        this.currentBlock = new Block(Block.getRandomBlockType());
+        this.currentBlock = this.nextBlocks.shift();
+        this.nextBlocks.push(new Block(Block.getRandomBlockType()));
     }
 
     addGameOverHandler(callback) {
@@ -57,6 +61,7 @@ export class Game {
             playerID: this.playerID,
             board: this.board.getBoardState(),
             currentBlock: this.currentBlock?.getBlockInfo(),
+            nextBlocks: this.nextBlocks.map((block) => block.getBlockInfo()),
             isLost: this.isLost,
         };
     }
