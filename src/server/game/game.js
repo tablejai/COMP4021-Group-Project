@@ -104,6 +104,10 @@ export class Game {
                     this.currentBlock.rise();
                 }
                 break;
+            case "c":
+                // Cheat Mode: Clears the lowest row
+                this.board.clearBottomRow();
+                break;
             default:
                 break;
         }

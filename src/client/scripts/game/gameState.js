@@ -30,7 +30,6 @@ class GameState {
     parseOthersGameState(gameState) {
         const currentPlayerID = gameState["playerID"];
         if (!(currentPlayerID in this.opponentBoards)) {
-            console.log("other players gameState received");
             let boardId = `opponent-board-${
                 Object.keys(this.opponentBoards).length + 1
             }`;

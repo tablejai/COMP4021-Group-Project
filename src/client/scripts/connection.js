@@ -78,7 +78,6 @@ function Connection(user) {
     });
 
     socket.on("gameover", (gameOver) => {
-        console.log("gameover");
         currentGameState.myBoard.isGameOver = true;
     });
 
