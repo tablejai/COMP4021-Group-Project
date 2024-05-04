@@ -255,12 +255,12 @@ io.on("connection", (socket) => {
     socket.on("ready", () => {
         const roomName = socket.request.session.roomName;
         rooms[roomName].players.find((p) => p.id === user.id).status = "ready";
+        const gameController = gameControllers[roomName];
         // if all are ready, start the game
         if (
             rooms[roomName].players.length === ROOM_SIZE &&
             rooms[roomName].players.every((p) => p.status === "ready")
         ) {
-            const gameController = gameControllers[roomName];
             io.to(roomName).emit("game start");
             gameController.startGameLoop((gameStates, timeLeft) => {
                 io.to(roomName).emit("game states", gameStates, timeLeft);
@@ -271,6 +271,7 @@ io.on("connection", (socket) => {
 
             rooms[roomName].players.forEach((p) => (p.status = "playing"));
         }
+        io.to(roomName).emit("game states", [gameController.getGameState(user)]);
     });
 
     socket.on("action", ({ action, payload }) => {

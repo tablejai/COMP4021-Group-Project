@@ -6,7 +6,8 @@ class GameState {
     constructor(playerId) {
         this.myPlayerID = playerId;
         this.myBoard = new Board("grid", 30);
-        this.myBlock = new Block("type", BLOCK_SHAPES["Z"], 0, 0);
+        // this.myBlock = new Block("type", BLOCK_SHAPES["Z"], 0, 0);
+        this.myBlock = null;
         this.opponentBoards = {};
 
         this.clear();
@@ -19,12 +20,14 @@ class GameState {
 
         // Parsing the block
         const currentBlock = gameState["currentBlock"];
-        this.myBlock = new Block(
-            currentBlock["blockType"],
-            currentBlock["blockShape"],
-            currentBlock["x"],
-            currentBlock["y"]
-        );
+        if (currentBlock) {
+            this.myBlock = new Block(
+                currentBlock["blockType"],
+                currentBlock["blockShape"],
+                currentBlock["x"],
+                currentBlock["y"]
+            );
+        }
     }
 
     parseOthersGameState(gameState) {

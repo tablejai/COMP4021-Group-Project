@@ -43,10 +43,7 @@ export class Board {
 
     clear() {
         this.canvas.style.filter = "";
-        this.boardState = Array(20)
-            .fill(0)
-            .map(() => Array(10).fill("white"));
-        this.draw();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     drawTextBG(txt, x, y) {
