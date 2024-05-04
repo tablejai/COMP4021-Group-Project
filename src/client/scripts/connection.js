@@ -1,4 +1,5 @@
 import { GameState } from "./game/gameState.js";
+import { keyTyped } from "./game/keyTyped.js";
 
 var currentGameState = new GameState();
 
@@ -12,6 +13,11 @@ function Connection(user) {
     const disconnect = () => {
         socket.disconnect();
     };
+
+    // key
+    window.addEventListener('keydown', function(event) {
+      keyTyped(socket, event.key);
+    });
 
     socket.on("connect", () => {
         console.log("connected");

@@ -1,4 +1,4 @@
-function keyTyped() {
+export function keyTyped(socket, key) {
     // TODO: Think if the emitMsg actually be like this
     let emitMsg = null;
     switch (key) {

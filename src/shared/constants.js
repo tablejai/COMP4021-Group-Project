@@ -35,38 +35,38 @@ export const BLOCK_NAMES = ["O", "I", "S", "Z", "L", "J", "T"];
 
 export const BLOCK_SHAPES = {
   O: [
-    [YELLOW, YELLOW],
-    [YELLOW, YELLOW],
+    ["yellow", "yellow"],
+    ["yellow", "yellow"],
   ],
   I: [
     [null, null, null, null],
-    [CYAN, CYAN, CYAN, CYAN],
+    ["cyan", "cyan", "cyan", "cyan"],
     [null, null, null, null],
     [null, null, null, null],
   ],
   S: [
-    [null, GREEN, GREEN],
-    [GREEN, GREEN, null],
+    [null, "green", "green"],
+    ["green", "green", null],
     [null, null, null],
   ],
   Z: [
-    [RED, RED, null],
-    [null, RED, RED],
+    ["red", "red", null],
+    [null, "red", "red"],
     [null, null, null],
   ],
   L: [
-    [null, ORANGE, null],
-    [null, ORANGE, null],
-    [null, ORANGE, ORANGE],
+    [null, "orange", null],
+    [null, "orange", null],
+    [null, "orange", "orange"],
   ],
   J: [
-    [null, BLUE, null],
-    [null, BLUE, null],
-    [BLUE, BLUE, null],
+    [null, "blue", null],
+    [null, "blue", null],
+    ["blue", "blue", null],
   ],
   T: [
-    [null, PURPLE, null],
-    [PURPLE, PURPLE, PURPLE],
+    [null, "purple", null],
+    ["purple", "purple", "purple"],
     [null, null, null],
   ],
 };
