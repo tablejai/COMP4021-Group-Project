@@ -11,7 +11,9 @@ function handleKeyPress(key) {
     case "s":
       return { action: "DOWN" };
     case " ":
-      return { action: "CHEAT" }; // think of a code for this later
+      return { action: "DROP" };
+    case "c":
+      return { action: "CHEAT" };
     default:
       return {};
   }

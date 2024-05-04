@@ -6,5 +6,17 @@
   "Leo2": {
     "password": "$2b$09$IPtztSsTV4VrcNVzfvkwleou4UyW3P0UPD3VoklUivJBD6MCcRauu",
     "id": "818dfab5-9a0f-46d5-ac08-c7645a066677"
+  },
+  "a": {
+    "password": "$2b$09$12WI.6zx6SUGExBF5NMeleqjhEHA1VuGfeLMyzdcL0C0ZEf7/qEB6",
+    "id": "833613da-32fa-418e-ba2b-d5201dddebb6"
+  },
+  "b": {
+    "password": "$2b$09$Snuug3SJWbHAoGyyZ5ZQ4eI/h.bJbNxhP1Om.2TDEmCYCNZN9dYZi",
+    "id": "fcd24e7e-ffd4-4660-823f-17370c9bcccc"
+  },
+  "c": {
+    "password": "$2b$09$OxvHW4maZuoW6YeW04XjaezveFdBdN52unPJgOV3P92Fx9g4sWFnG",
+    "id": "3a9c62c8-f8ce-4439-8e7b-9c9de6b3bc3e"
   }
 }

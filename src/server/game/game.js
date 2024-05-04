@@ -1,25 +1,13 @@
 import { Board } from "./board.js";
 import { Block } from "./block.js";
-import { ROOM_SIZE } from "../../shared/constants.js";
 
 export class Game {
-  /**
-   *
-   * @param {import("../../server/index.js").Room} room
-   */
-  constructor(room) {
-    this.roomName = room.name;
-    this.playerIds = room.players.map((p) => p.id); // Expect to be a list of players
+  constructor(roomName, user) {
+    this.roomName = roomName;
+    this.playerID = user.id;
     this.currentBlock = null;
     this.board = new Board(10, 20);
   }
-
-  updateRoom(room) {
-    this.roomName = room.name;
-    this.playerIds = room.players.map((p) => p.id);
-  }
-
-  endGame() {}
 
   getCurrentBlock() {
     return this.currentBlock;
@@ -46,62 +34,79 @@ export class Game {
       if (!this.board.canAdd(this.currentBlock)) {
         this.currentBlock.rise();
         this.spawnNewBlock();
+        if (!this.board.canAdd(this.currentBlock)) {
+          return "gameloss";
+        }
       }
     }
 
     // Clear Rows
     this.board.clearRows();
 
-    return 1;
+    return "success";
   }
 
   getGameState() {
     return {
+      playerID: this.playerID,
       board: this.board.getBoardState(),
       currentBlock: this.currentBlock.getBlockInfo(),
       timeLeft: 300,
     };
   }
 
-  handleAction(action, payload) {
-    switch (action) {
-      case "LEFT":
+  addKeyHandlers(client) {
+    client.on("keyTyped", (keyTypedData) => {
+      this.keyHandler(JSON.parse(keyTypedData)["keyPressed"]);
+    });
+  }
+
+  keyHandler(keyPressed) {
+    switch (keyPressed) {
+      case "a":
         // Move Left
         this.currentBlock.moveLeft();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.moveRight();
         }
         break;
-      case "RIGHT":
+      case "d":
         // Move Right
         this.currentBlock.moveRight();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.moveLeft();
         }
         break;
-      case "ROTANTI":
+      case "q":
         // Rotate Anti-clockwise
         this.currentBlock.rotateAntiClockwise();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rotateClockwise();
         }
         break;
-      case "ROT":
+      case "e":
         // Rotate Clockwise
         this.currentBlock.rotateClockwise();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rotateAntiClockwise();
         }
         break;
-      case "DOWN":
+      case "s":
         // Falls
         this.currentBlock.fall();
         if (!this.board.canAdd(this.currentBlock)) {
           this.currentBlock.rise();
         }
         break;
+      case "DROP":
+        while (this.board.canAdd(this.currentBlock)) {
+          this.currentBlock.fall();
+        }
+        this.currentBlock.rise();
       case "CHEAT":
-      // do something with payload
+        // Cheat Mode: Clears the lowest row
+        this.board.clearBottomRow();
+        break;
       default:
         break;
     }

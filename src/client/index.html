@@ -15,8 +15,8 @@
       <h1 id="title">Tetris 9</h1>
       <button id="header-leave" class="hidden">Leave Game</button>
     </header>
-    <main>
-      <div id="p5-sketch" class="sketch">
+    <!-- <main> -->
+      <!-- <div id="p5-sketch" class="sketch"> -->
         <!-- p5 instance will be created here -->
       </div>
       <div id="auth-overlay" class="overlay">
@@ -97,19 +97,38 @@
           <p id="lobby-message" class="message"></p>
         </div>
       </div>
-    </main>
+    <!-- </main> -->
 
-    <script src="/socket.io/socket.io.min.js"></script>
-    <script type="module" src="scripts/index.js"></script>
-    <!-- <script src="scripts/game/boardPlacement.js"></script>
-    <script src="scripts/game/block.js">
-      var currentBlock = null;
-    </script>
-    <script src="scripts/game/board.js">
-      var board = new Board(BOARD_WIDTH, BOARD_HEIGHT, false, "MAIN");
-    </script>
-    <script type="module" src="scripts/game/sketch.js"></script>
-    <script src="scripts/connection.js"></script>
-    <script src="scripts/game/keyTyped.js"></script> -->
-  </body>
+  <script type="module" src="constants.js"></script>
+  <script src="/socket.io/socket.io.min.js"></script>
+  <script type="module" src="scripts/game/gameState.js"> </script>
+  <script type="module" src="scripts/index.js"></script> 
+  <!-- Opponent game boards on the left -->
+  <div id="game-container">
+    <div class="opponent-board-container">
+      <canvas class="opponent-board" id="opponent-board-1" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-2" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-3" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-4" width="140" height="280"></canvas>
+    </div>
+
+    <canvas id="grid" width="300" height="600"></canvas>
+
+    <!-- Opponent game boards on the right -->
+    <div class="opponent-board-container">
+      <canvas class="opponent-board" id="opponent-board-5" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-6" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-7" width="140" height="280"></canvas>
+      <canvas class="opponent-board" id="opponent-board-8" width="140" height="280"></canvas>
+    </div>
+  </div>
+
+  <script type="module" src="scripts/game/board.js"> </script>
+  <script type="module" src="scripts/game/block.js"> </script>
+
+  <!-- <script type="module" src="scripts/game/sketch.js"></script>-->
+  <script type="module"  src="scripts/connection.js"></script>
+  <script type="module" src="scripts/game/keyTyped.js"></script>
+</body>
+
 </html>
