@@ -25,7 +25,7 @@ export class Game {
     }
 
     addGarbageRow(numGarbageRow) {
-        this.board.addGarbageRow(numGarbageRow);
+        this.isLost = this.board.addGarbageRow(numGarbageRow);
     }
 
     addGameOverHandler(callback) {

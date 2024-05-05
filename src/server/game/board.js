@@ -3,6 +3,7 @@ export class Board {
         this.cols = w;
         this.rows = h;
         this.background = "white";
+        this.garbageColor = "gray";
         this.boardState = Array(this.rows)
             .fill(0)
             .map(() => Array(this.cols).fill(this.background));
@@ -49,7 +50,12 @@ export class Board {
                 this.boardState.unshift(
                     new Array(this.cols).fill(this.background)
                 );
-                rowsCleared++;
+                const isGarbageRow = this.boardState[row].includes(
+                    this.garbageColor
+                );
+                if (!isGarbageRow) {
+                    rowsCleared++;
+                }
             }
         }
         return rowsCleared;
@@ -65,15 +71,25 @@ export class Board {
         // This version will fail if the next block being placed is not considered
         // as gameover, even if the blocks placed should have exceeded.
 
-        this.boardState.splice(0, numGarbageRow);
+        var isGameOver = false;
 
         const colIndexForHole = Math.floor(Math.random() * this.cols);
-        let garbageRow = Array(10).fill("gray");
-        garbageRow[colIndexForHole] = "white";
+        let garbageRow = Array(10).fill(this.garbageColor);
+        garbageRow[colIndexForHole] = this.background;
 
         for (let i = 0; i < numGarbageRow; i++) {
             this.boardState.push(garbageRow);
         }
+
+        for (let row = 0; row < numGarbageRow; row++) {
+            if (!this.boardState[row].includes(this.background)) {
+                isGameOver = true;
+            }
+        }
+
+        this.boardState.splice(0, numGarbageRow);
+
+        return isGameOver;
     }
 
     getBoardState() {
