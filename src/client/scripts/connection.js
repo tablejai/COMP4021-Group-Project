@@ -92,9 +92,8 @@ function Connection(user) {
         const ms = Math.floor(timeLeft / 10) % 100;
 
         // pad the numbers with 0
-        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${
-            ms < 10 ? `0${ms}` : ms
-        }`;
+        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${ms < 10 ? `0${ms}` : ms
+            }`;
         currentGameState.parseGameStates(gameStates);
     });
 
@@ -103,10 +102,10 @@ function Connection(user) {
         console.log("Game Over", gameOver);
     });
 
-    socket.on("game end", (gameState) => {
+    socket.on("game end", (gameState, startTime) => {
         window.onkeydown = null;
         console.log("Game end", gameState);
-        currentGameState.parseGameEndStates(gameState);
+        currentGameState.parseGameEndStates(gameState, startTime);
     });
 
     return {

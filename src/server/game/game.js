@@ -1,5 +1,6 @@
 import { Board } from "./board.js";
 import { Block } from "./block.js";
+import { THREE_MINUTES } from "../../shared/constants.js";
 
 export class Game {
     constructor(roomName, user) {
@@ -10,7 +11,9 @@ export class Game {
         this.board = new Board(10, 20);
         this.isLost = false;
         this.gameOverHandler = null;
-        this.score = 0;
+        this.time = THREE_MINUTES;
+        this.rowCleared = 0;
+        this.garbageRow = 0;
     }
 
     getCurrentBlock() {
@@ -45,13 +48,14 @@ export class Game {
                 this.spawnNewBlock();
                 if (!this.board.canAdd(this.currentBlock)) {
                     this.isLost = true;
+                    this.time = Date.now();
                     this.gameOverHandler?.();
                 }
             }
         }
 
         // Clear Rows
-        this.board.clearRows();
+        this.rowCleared += this.board.clearRows();
     }
 
     getGameState() {
@@ -67,7 +71,9 @@ export class Game {
         return {
             playerID: this.playerID,
             playerName: this.playerName,
-            score: this.score,
+            time: this.time,
+            rowCleared: this.rowCleared,
+            garbageRow: this.garbageRow,
         };
     }
 

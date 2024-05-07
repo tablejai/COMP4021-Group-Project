@@ -47,7 +47,7 @@ export class GameController {
     });
     if (timeLeft <= 0 || gameStates.every((game) => game.isLost)) {
       clearInterval(this.intervalId);
-      this.handleEndGame?.(gameEndStates);
+      this.handleEndGame?.(gameEndStates, this.gameStartTime);
     }
   }
 

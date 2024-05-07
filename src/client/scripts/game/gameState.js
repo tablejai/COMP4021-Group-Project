@@ -10,6 +10,7 @@ class GameState {
         this.myBlock = null;
         this.opponentBoards = {};
         this.gameScore = {};
+        this.gameOverTime = null;
 
         this.clear();
     }
@@ -50,28 +51,51 @@ class GameState {
         this.draw();
     }
 
-    parseGameEndStates(gameStates) {
+    parseGameEndStates(gameStates, startTime) {
         document.getElementById('game-end').style.display = 'flex';
         let player = null;
         gameStates.forEach((gameState) => {
             const playerID = gameState["playerID"];
             if (playerID == this.myPlayerID) {
-                console.log('My score:', gameState.score);
-                document.getElementById("score").textContent = `Score: ${gameState.score}`;
+                console.log('My time:', gameState.time, "; start time:", startTime);
+                const time = gameState.time - startTime;
+                const min = Math.floor(time / 60 / 1000);
+                const sec = Math.floor(time / 1000) % 60;
+                const ms = Math.floor(time / 10) % 100;
+                document.getElementById("time").textContent = `Time: ${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${ms < 10 ? `0${ms}` : ms}`;
+                document.getElementById("rowCleared").textContent = `Rows Cleared: ${gameState.rowCleared}`;
+                document.getElementById("garbageRow").textContent = `Garbage Rows Sent: ${gameState.garbageRow}`;
                 player = gameState["playerName"];
             }
-            this.gameScore[gameState["playerName"]] = gameState.score;
+            this.gameScore[gameState["playerName"]] = {
+                time: gameState.time - startTime,
+                rowCleared: gameState.rowCleared,
+                garbageRow: gameState.garbageRow
+            };
         });
         const rankingsTable = document.getElementById('rankings');
-        const sortedScores = Object.entries(this.gameScore).sort((a, b) => b[1] - a[1]);
+        const sortedScores = Object.entries(this.gameScore).sort((a, b) => {
+            if (a[1].time !== b[1].time) {
+                return b[1].time - a[1].time;
+            } else if (a[1].rowCleared !== b[1].rowCleared) {
+                return b[1].rowCleared - a[1].rowCleared;
+            } else {
+                return b[1].garbageRow - a[1].garbageRow;
+            }
+        });
         let count = 1;
         sortedScores.forEach(([playerID, score]) => {
+            const { time, rowCleared, garbageRow } = score;
             const row = rankingsTable.insertRow();
             row.insertCell().textContent = count++;
             row.insertCell().textContent = playerID;
-            row.insertCell().textContent = score;
-            row.insertCell().textContent = score;
-            row.insertCell().textContent = score;
+            const min = Math.floor(time / 60 / 1000);
+            const sec = Math.floor(time / 1000) % 60;
+            const ms = Math.floor(time / 10) % 100;
+            row.insertCell().textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${ms < 10 ? `0${ms}` : ms}`;
+
+            row.insertCell().textContent = rowCleared;
+            row.insertCell().textContent = garbageRow;
             if (playerID == player) {
                 row.style.backgroundColor = "red";
             }

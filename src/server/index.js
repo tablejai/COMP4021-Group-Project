@@ -214,8 +214,8 @@ io.on("connection", (socket) => {
             gameController.startGameLoop((gameStates, timeLeft) => {
                 io.to(roomName).emit("game states", gameStates, timeLeft);
             });
-            gameController.addEndGameHandler((gameEndStates) => {
-                io.to(roomName).emit("game end", gameEndStates);
+            gameController.addEndGameHandler((gameEndStates, gameStartTime) => {
+                io.to(roomName).emit("game end", gameEndStates, gameStartTime);
             });
         }
 
@@ -277,8 +277,8 @@ io.on("connection", (socket) => {
             gameController.startGameLoop((gameStates, timeLeft) => {
                 io.to(roomName).emit("game states", gameStates, timeLeft);
             });
-            gameController.addEndGameHandler((gameEndStates) => {
-                io.to(roomName).emit("game end", gameEndStates);
+            gameController.addEndGameHandler((gameEndStates, gameStartTime) => {
+                io.to(roomName).emit("game end", gameEndStates, gameStartTime);
             });
 
             gameController.addGameOverHandler(user, () => {
