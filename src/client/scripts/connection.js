@@ -87,9 +87,9 @@ function Connection(user) {
 
     socket.on("game states", (gameStates, timeLeft = THREE_MINUTES) => {
         const timeLeftDiv = document.querySelector("#timer");
-        const min = Math.floor(timeLeft / 60 / 1000);
-        const sec = Math.floor(timeLeft / 1000) % 60;
-        const ms = Math.floor(timeLeft / 10) % 100;
+        const min = Math.max(Math.floor(timeLeft / 60 / 1000), 0);
+        const sec = Math.max(Math.floor(timeLeft / 1000) % 60, 0);
+        const ms = Math.max(Math.floor(timeLeft / 10) % 100, 0);
 
         // pad the numbers with 0
         timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${ms < 10 ? `0${ms}` : ms
