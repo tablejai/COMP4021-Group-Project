@@ -77,6 +77,9 @@ class GameState {
             };
         });
         const rankingsTable = document.getElementById('rankings');
+        while (rankingsTable.rows.length > 1) {
+            rankingsTable.deleteRow(1);
+        }
         const sortedScores = Object.entries(this.gameScore).sort((a, b) => {
             if (a[1].time !== b[1].time) {
                 return b[1].time - a[1].time;

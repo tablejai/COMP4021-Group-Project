@@ -64,6 +64,8 @@ function Connection(user) {
         readyButton.onclick = () => {
             socket.emit("ready");
             readyButton.classList.add("hidden");
+            const timeLeftDiv = document.querySelector("#timer");
+            timeLeftDiv.classList.remove("hidden");
         };
 
         currentGameState = new GameState(user.id);
@@ -106,8 +108,25 @@ function Connection(user) {
         window.onkeydown = null;
         console.log("Game end", gameState);
         currentGameState.parseGameEndStates(gameState, startTime);
-    });
 
+        // Show game end
+        const gameEndOverlay = document.querySelector("#game-end");
+        gameEndOverlay.classList.remove("hidden");
+
+        const restartButton = document.querySelector("#restart-button");
+        restartButton.addEventListener("click", () => {
+            socket.emit("leave room");
+            const gameEndOverlay = document.querySelector("#game-end");
+            gameEndOverlay.classList.add("hidden");
+            const lobbyOverlay = document.querySelector("#lobby-overlay");
+            lobbyOverlay.classList.remove("hidden");
+            const timeLeftDiv = document.querySelector("#timer");
+            timeLeftDiv.classList.add("hidden");
+        });
+    });
+    socket.on("game restart", () => {
+        currentGameState.clear();
+    });
     return {
         connect,
         disconnect,

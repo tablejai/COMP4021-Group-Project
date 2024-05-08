@@ -246,6 +246,8 @@ io.on("connection", (socket) => {
         socket.emit("leave game");
         socket.emit("remove player", user);
         io.to(roomName).emit("remove player", user);
+
+        socket.emit("game restart");
     });
 
     socket.on("disconnect", () => {
