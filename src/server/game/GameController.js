@@ -15,6 +15,7 @@ export class GameController {
 
   createGame(user) {
     this.games[user.id] = new Game(this.roomName, user);
+    this.games[user.id].addClearRowHandler(this.handleClearRow.bind(this));
   }
 
   getGameState(user) {
@@ -23,6 +24,15 @@ export class GameController {
 
   getGameEndState(user) {
     return this.games[user.id].getGameEndState();
+  }
+
+  handleClearRow(playerID, numGarbageRow) {
+    console.log(this.games);
+    Object.values(this.games).map((game) => {
+      if (game.playerID != playerID) {
+        game.addGarbageRow(numGarbageRow);
+      }
+    });
   }
 
   handleAction(user, action, payload) {

@@ -11,6 +11,7 @@ export class Game {
         this.board = new Board(10, 20);
         this.isLost = false;
         this.gameOverHandler = null;
+        this.clearRowHandler = null;
         this.time = THREE_MINUTES;
         this.rowCleared = 0;
         this.garbageRow = 0;
@@ -28,8 +29,17 @@ export class Game {
         this.currentBlock = new Block(Block.getRandomBlockType());
     }
 
+    addGarbageRow(numGarbageRow) {
+        this.isLost = this.board.addGarbageRow(numGarbageRow);
+    }
+
     addGameOverHandler(callback) {
         this.gameOverHandler = callback.bind(this);
+    }
+
+    // Clunky name but nvm
+    addClearRowHandler(callback) {
+        this.clearRowHandler = callback;
     }
 
     update() {
@@ -55,7 +65,13 @@ export class Game {
         }
 
         // Clear Rows
-        this.rowCleared += this.board.clearRows();
+        const rowsCleared = this.board.clearRows();
+        this.rowCleared += rowsCleared;
+        if (rowsCleared > 0) {
+            // TODO: Figure out a more playable way for numGarbageRow to be determined
+            const numGarbageRow = rowsCleared;
+            this.clearRowHandler(this.playerID, numGarbageRow);
+        }
     }
 
     getGameState() {
@@ -123,6 +139,7 @@ export class Game {
                     this.currentBlock.fall();
                 }
                 this.currentBlock.rise();
+                this.spawnNewBlock();
                 break;
             case "CHEAT":
                 // Cheat Mode: Clears the lowest row
