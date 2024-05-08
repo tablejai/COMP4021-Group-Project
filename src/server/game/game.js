@@ -12,9 +12,9 @@ export class Game {
         this.isLost = false;
         this.gameOverHandler = null;
         this.clearRowHandler = null;
-        this.time = THREE_MINUTES;
+        this.time = null;
         this.rowCleared = 0;
-        this.garbageRow = 0;
+        // this.garbageRow = 0;
     }
 
     getCurrentBlock() {
@@ -89,7 +89,7 @@ export class Game {
             playerName: this.playerName,
             time: this.time,
             rowCleared: this.rowCleared,
-            garbageRow: this.garbageRow,
+            // garbageRow: this.garbageRow,
         };
     }
 
