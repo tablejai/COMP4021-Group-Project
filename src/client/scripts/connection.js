@@ -61,6 +61,8 @@ function Connection(user) {
         const lobbyOverlay = document.querySelector("#lobby-overlay");
         const leaveGame = document.querySelector("#header-leave");
         const readyButton = document.querySelector("#ready-button");
+        const gameEndOverlay = document.querySelector("#game-end");
+        gameEndOverlay.classList.add("hidden");
         lobbyOverlay.classList.add("hidden");
         leaveGame.classList.remove("hidden");
         leaveGame.onclick = () => {
@@ -83,15 +85,18 @@ function Connection(user) {
         currentGameState = new GameState(user.id);
     });
 
-    socket.on("resume", () => {
+    socket.on("resume", (isLost) => {
         const readyButton = document.querySelector("#ready-button");
-        socket.emit("ready");
         readyButton.classList.add("hidden");
         playerReady = true;
         const timeLeftDiv = document.querySelector("#timer");
         timeLeftDiv.classList.remove("hidden");
         const title = document.querySelector("#title");
         title.style.position = "absolute";
+
+        if (isLost) {
+            return;
+        }
         window.onkeydown = (e) => {
             if (e.isComposing || e.keyCode === 229) {
                 return;

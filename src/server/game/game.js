@@ -57,12 +57,21 @@ export class Game {
         if (this.currentBlock.shouldFall(Date.now())) {
             this.currentBlock.resetLastDropTicks();
             this.currentBlock.fall();
+
+            // check if the block reached the lowest occupied row
             if (!this.board.canAdd(this.currentBlock)) {
-                this.currentBlock.rise();
+                this.currentBlock.rise(); // compensate the effect on line 59
+
+                // spawn new block at the top
                 this.spawnNewBlock();
+
+                // check if the new block can fit into the board
                 if (!this.board.canAdd(this.currentBlock)) {
                     this.isLost = true;
                     this.time = Date.now();
+
+                    // draw partial block to the board
+                    this.board.addPartialBlockToBoard(this.currentBlock);
                     this.gameOverHandler?.();
                 }
             }

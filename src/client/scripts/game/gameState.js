@@ -7,18 +7,20 @@ class GameState {
     constructor(playerId) {
         this.myPlayerID = playerId;
         this.myBoard = new Board("grid", 30);
-        // this.myBlock = new Block("type", BLOCK_SHAPES["Z"], 0, 0);
         this.myBlock = null;
         this.preview = new BlockPreview();
         this.opponentBoards = {};
         this.gameScore = {};
-        // this.gameOverTime = null;
+        this.isGameOver = false;
 
         this.clear();
     }
 
     parseMyGameState(gameState) {
-        if (gameState.isLost) this.myBoard.isGameOver = true;
+        if (gameState.isLost) {
+            this.myBoard.isGameOver = true;
+            this.isGameOver = true;
+        }
         // Parsing the board
         this.myBoard.updateBoard(gameState.board);
 
@@ -122,7 +124,7 @@ class GameState {
 
     draw() {
         this.myBoard.draw();
-        this.myBlock?.draw(this.myBoard.ctx);
+        !this.isGameOver && this.myBlock?.draw(this.myBoard.ctx);
         this.preview.draw();
         Object.values(this.opponentBoards).forEach((board) => {
             board.draw();

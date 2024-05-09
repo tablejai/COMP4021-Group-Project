@@ -12,10 +12,34 @@ export class Board {
     addBlockToBoard(block) {
         for (let row = 0; row < block.blockShape.length; row++) {
             for (let col = 0; col < block.blockShape[row].length; col++) {
-                if (block.blockShape[row][col] != null) {
-                    this.boardState[block.y + row][block.x + col] =
-                        block.blockShape[row][col];
+                if (block.blockShape[row][col] == null) continue;
+                this.boardState[block.y + row][block.x + col] = block.blockShape[row][col];
+            }
+        }
+    }
+
+    addPartialBlockToBoard(block) {
+        let y = block.y,
+            x = block.x;
+        // add block to the board bottom up
+        for (let row = block.blockShape.length - 1; row >= 0; row--) {
+            for (let col = 0; col < block.blockShape[row].length; col++) {
+                if (block.blockShape[row][col] == null) continue;
+                const currentY = y + row;
+                const currentX = x + col;
+
+                if (currentY < 0 || currentX < 0) continue;
+
+                // this row is occupied
+                if (
+                    this.boardState[currentY][currentX] != this.background ||
+                    this.boardState[currentY][currentX + 1] != this.background
+                ) {
+                    y--;
+                    row++;
+                    break;
                 }
+                this.boardState[currentY][currentX] = block.blockShape[row][col];
             }
         }
     }
@@ -47,12 +71,8 @@ export class Board {
         for (let row = this.rows - 1; row >= 0; row--) {
             if (!this.boardState[row].includes(this.background)) {
                 this.boardState.splice(row, 1);
-                this.boardState.unshift(
-                    new Array(this.cols).fill(this.background)
-                );
-                const isGarbageRow = this.boardState[row].includes(
-                    this.garbageColor
-                );
+                this.boardState.unshift(new Array(this.cols).fill(this.background));
+                const isGarbageRow = this.boardState[row].includes(this.garbageColor);
                 if (!isGarbageRow) {
                     rowsCleared++;
                 }

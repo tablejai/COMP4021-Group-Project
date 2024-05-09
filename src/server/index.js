@@ -168,7 +168,7 @@ io.on("connection", (socket) => {
         rooms[roomName].players.find((p) => p.id === user.id).status = "playing";
         socket.emit("player online", user);
         socket.emit("init", { room: rooms[roomName] });
-        socket.emit("resume");
+        socket.emit("resume", gameControllers[roomName].getGameState(user).isLost);
     } else {
         console.log("join lobby", user);
         socket.join("lobby");

@@ -17,9 +17,6 @@ export class Board {
     }
 
     draw() {
-        if (this.isGameOver) {
-            this.drawGameOver();
-        }
         this.ctx.strokeStyle = "#888";
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
@@ -29,6 +26,9 @@ export class Board {
                 this.ctx.fillRect(x, y, this.gridSize, this.gridSize);
                 this.ctx.strokeRect(x, y, this.gridSize, this.gridSize);
             }
+        }
+        if (this.isGameOver) {
+            this.drawGameOver();
         }
     }
 
