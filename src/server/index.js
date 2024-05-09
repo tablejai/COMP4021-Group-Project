@@ -163,12 +163,12 @@ io.on("connection", (socket) => {
     onlineUserIds.add(user.id);
 
     // if user was already in the room, join the room again
-    // TODO: check if game in that room is over
     if (checkUserWasPlaying(roomName, user.id)) {
         socket.join(roomName);
         rooms[roomName].players.find((p) => p.id === user.id).status = "playing";
         socket.emit("player online", user);
         socket.emit("init", { room: rooms[roomName] });
+        socket.emit("resume");
     } else {
         console.log("join lobby", user);
         socket.join("lobby");
@@ -211,20 +211,9 @@ io.on("connection", (socket) => {
         // update game instance
         const gameController = gameControllers[roomName];
         gameController.createGame(user);
-
-        // if all are ready, start the game
-        if (
-            rooms[roomName].players.length === ROOM_SIZE &&
-            rooms[roomName].players.every((p) => p.status === "ready")
-        ) {
-            io.to(roomName).emit("game start");
-            gameController.startGameLoop((gameStates, timeLeft) => {
-                io.to(roomName).emit("game states", gameStates, timeLeft);
-            });
-            gameController.addEndGameHandler((gameEndStates, gameStartTime) => {
-                io.to(roomName).emit("game end", gameEndStates, gameStartTime);
-            });
-        }
+        gameController.addGameOverHandler(user, () => {
+            socket.emit("gameover", { data: "gg simida" });
+        });
 
         // emit initial room data
         socket.emit("init", { room: rooms[roomName] });
@@ -254,7 +243,10 @@ io.on("connection", (socket) => {
         socket.emit("remove player", user);
         io.to(roomName).emit("remove player", user);
 
-        socket.emit("game restart");
+        // if not players left in the room, reset the game
+        if (rooms[roomName].players.length === 0) {
+            gameControllers[roomName].reset();
+        }
     });
 
     socket.on("disconnect", () => {
@@ -264,6 +256,12 @@ io.on("connection", (socket) => {
         if (player) {
             player.status = "offline";
             io.to(roomName).emit("player offline", user);
+        }
+
+        // if all players are offline, reset the game
+        if (rooms[roomName]?.players.every((p) => p.status === "offline")) {
+            gameControllers[roomName].reset();
+            rooms[roomName].players = [];
         }
 
         onlineUserIds.delete(user.id);
@@ -290,9 +288,6 @@ io.on("connection", (socket) => {
                 io.to(roomName).emit("game end", gameEndStates, gameStartTime);
             });
 
-            gameController.addGameOverHandler(user, () => {
-                socket.emit("gameover", { data: "gg simida" });
-            });
             rooms[roomName].players.forEach((p) => (p.status = "playing"));
         }
         io.to(roomName).emit("game states", [gameController.getGameState(user)]);

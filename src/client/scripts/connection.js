@@ -28,15 +28,22 @@ function Connection(user) {
         // update room list ui
         const roomListDiv = document.querySelector("#room-list");
         const rooms = Object.values(roomList).map(({ name, players, size }) => {
+            const isGameStarted = players.some((player) => player.status === "playing");
+
             const room = document.createElement("div");
             room.classList.add("room");
+
+            isGameStarted && room.classList.add("disabled");
+            room.title = isGameStarted ? "Game is in progress" : "Click to join";
+
             room.innerHTML = `
         <span class="room-name">${name}</span>
         <p>Players: ${players.length}/${size}</p>
       `;
-            room.addEventListener("click", () => {
-                socket.emit("join room", name);
-            });
+            !isGameStarted &&
+                room.addEventListener("click", () => {
+                    socket.emit("join room", name);
+                });
             return room;
         });
 
@@ -74,6 +81,24 @@ function Connection(user) {
         };
 
         currentGameState = new GameState(user.id);
+    });
+
+    socket.on("resume", () => {
+        const readyButton = document.querySelector("#ready-button");
+        socket.emit("ready");
+        readyButton.classList.add("hidden");
+        playerReady = true;
+        const timeLeftDiv = document.querySelector("#timer");
+        timeLeftDiv.classList.remove("hidden");
+        const title = document.querySelector("#title");
+        title.style.position = "absolute";
+        window.onkeydown = (e) => {
+            if (e.isComposing || e.keyCode === 229) {
+                return;
+            }
+            const msg = handleKeyPress(e);
+            msg && socket.emit("action", msg);
+        };
     });
 
     socket.on("add player", (player) => {
@@ -133,8 +158,9 @@ function Connection(user) {
             title.style.position = "static";
         });
     });
-    socket.on("game restart", () => {
+    socket.on("leave game", () => {
         currentGameState.clear();
+        currentGameState = null;
     });
     return {
         connect,
