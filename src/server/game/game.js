@@ -15,6 +15,7 @@ export class Game {
         this.isLost = false;
         this.gameOverHandler = null;
         this.clearRowHandler = null;
+        this.rowClearSoundHandler = null;
         this.time = null;
         this.rowCleared = 0;
         // this.garbageRow = 0;
@@ -46,6 +47,10 @@ export class Game {
         this.clearRowHandler = callback;
     }
 
+    addRowClearSoundHandler(callback) {
+        this.rowClearSoundHandler = callback;
+    }
+
     update() {
         if (this.isLost) return;
         // Spawn new blocks when there are no blocks
@@ -72,7 +77,7 @@ export class Game {
         const rowsCleared = this.board.clearRows();
         this.rowCleared += rowsCleared;
         if (rowsCleared > 0) {
-            // TODO: Figure out a more playable way for numGarbageRow to be determined
+            this.rowClearSoundHandler();
             const numGarbageRow = rowsCleared;
             this.clearRowHandler(this.playerID, numGarbageRow);
         }
@@ -140,6 +145,13 @@ export class Game {
                 }
                 break;
             case "DROP":
+                if (this.currentBlock == null) return;
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.isLost = true;
+                    this.time = Date.now();
+                    this.gameOverHandler?.();
+                    return;
+                }
                 while (this.board.canAdd(this.currentBlock)) {
                     this.currentBlock.fall();
                 }
