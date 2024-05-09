@@ -236,7 +236,15 @@ io.on("connection", (socket) => {
         socket.leave(roomName);
         socket.join("lobby");
 
-        rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== user.id);
+        const player = rooms[roomName].players.find((p) => p.id === user.id);
+        // mark the player lost if the game has started, else remove the game from game controller
+        if (player && player.status === "playing") {
+            gameControllers[roomName].games[player.id].isLost = true;
+        } else {
+            player && delete gameControllers[roomName].games[player.id];
+        }
+        rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== player.id);
+
         socket.request.session.roomName = null;
         socket.request.session.save();
         socket.emit("leave game");
