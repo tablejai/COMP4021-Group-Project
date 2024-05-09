@@ -144,6 +144,13 @@ io.use((socket, next) => {
     playerSession(socket.request, {}, next);
 });
 
+function checkUserWasPlaying(roomName, userId) {
+    if (!roomName) return false;
+    if (!rooms[roomName]?.players.find((p) => p.id === userId && p.status === "offline"))
+        return false;
+    return true;
+}
+
 io.on("connection", (socket) => {
     const { user, roomName } = socket.request.session;
 
@@ -157,8 +164,9 @@ io.on("connection", (socket) => {
 
     // if user was already in the room, join the room again
     // TODO: check if game in that room is over
-    if (roomName && rooms[roomName]?.players.map((p) => p.id).includes(user.id)) {
+    if (checkUserWasPlaying(roomName, user.id)) {
         socket.join(roomName);
+        rooms[roomName].players.find((p) => p.id === user.id).status = "playing";
         socket.emit("player online", user);
         socket.emit("init", { room: rooms[roomName] });
     } else {
@@ -203,7 +211,6 @@ io.on("connection", (socket) => {
         // update game instance
         const gameController = gameControllers[roomName];
         gameController.createGame(user);
-
 
         // if all are ready, start the game
         if (
@@ -301,23 +308,6 @@ io.on("connection", (socket) => {
     // another way is to send game state only when there is a change, while the client keeps track of the time
     // on each action, the game will send a truth time to the client, and the client will calibrate its time
 });
-
-// function startGameInterval(client, roomName, user) {
-//   let game = new Game(roomName, user);
-//   game.addKeyHandlers(client);
-//   const intervalID = setInterval(() => {
-//     const status = game.update();
-//     switch (status) {
-//       case "success":
-//         break;
-//       case "gameloss":
-//         client.emit("gameover", { data: "gg simida" });
-//         clearInterval(intervalID);
-//         break;
-//     }
-//     io.to(game.roomName).emit("gameState", JSON.stringify(game.getGameState()));
-//   }, 1000 / FRAME_RATE);
-// }
 
 httpServer.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
