@@ -3,16 +3,13 @@
     <head>
         <meta charset="UTF-8" />
         <title>Tetris 9</title>
-
-        <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/p5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/addons/p5.sound.min.js"></script>
-
         <link rel="stylesheet" href="style.css" />
     </head>
 
     <body>
         <header>
             <h1 id="title">Tetris 9</h1>
+            <div id="timer"></div>
             <button id="header-leave" class="hidden">Leave Game</button>
         </header>
         <main>
@@ -94,7 +91,7 @@
                     <p id="lobby-message" class="message"></p>
                 </div>
             </div>
-            <div id="timer"></div>
+
             <div id="game-container">
                 <!-- Opponent game boards on the left -->
                 <div class="opponent-board-container">
@@ -125,7 +122,7 @@
                 </div>
 
                 <button id="ready-button" class="hidden">Ready</button>
-                <div class="col">
+                <div class="col" style="gap: 0">
                     <canvas id="preview-blocks" width="300" height="100"></canvas>
                     <canvas id="grid" width="300" height="600"></canvas>
                 </div>
@@ -161,19 +158,19 @@
             <div id="game-end">
                 <div class="player-score">
                     <h1>Game End</h1>
-                    <p id="time">Time: </p>
-                    <p id="rowCleared">Rows Cleared: </p>
+                    <p id="time">Time:</p>
+                    <p id="rowCleared">Rows Cleared:</p>
                     <!-- <p id="garbageRow">Garbage Rows Sent: </p> -->
-                    <button id="restart-button" style="font-size: 20px;">Restart</button>
+                    <button id="restart-button" style="font-size: 20px">Restart</button>
                 </div>
                 <div id="player-rankings">
                     <h1>Player Rankings</h1>
                     <table id="rankings">
                         <tr>
-                            <th>Rank </th>
-                            <th>Name </th>
-                            <th>Time </th>
-                            <th>Row Cleared </th>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Row Cleared</th>
                             <!-- <th>Garbage Row Sent </th> -->
 
                             <!-- <th>Time Played</th> -->

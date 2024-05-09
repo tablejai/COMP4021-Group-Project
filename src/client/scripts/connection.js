@@ -69,6 +69,8 @@ function Connection(user) {
             playerReady = true;
             const timeLeftDiv = document.querySelector("#timer");
             timeLeftDiv.classList.remove("hidden");
+            const title = document.querySelector("#title");
+            title.style.position = "absolute";
         };
 
         currentGameState = new GameState(user.id);
@@ -85,7 +87,7 @@ function Connection(user) {
             if (e.isComposing || e.keyCode === 229) {
                 return;
             }
-            const msg = handleKeyPress(e.key);
+            const msg = handleKeyPress(e);
             msg && socket.emit("action", msg);
         };
     });
@@ -127,6 +129,8 @@ function Connection(user) {
             lobbyOverlay.classList.remove("hidden");
             const timeLeftDiv = document.querySelector("#timer");
             timeLeftDiv.classList.add("hidden");
+            const title = document.querySelector("#title");
+            title.style.position = "static";
         });
     });
     socket.on("game restart", () => {
