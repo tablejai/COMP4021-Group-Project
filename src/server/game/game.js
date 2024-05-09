@@ -145,6 +145,13 @@ export class Game {
                 }
                 break;
             case "DROP":
+                if (this.currentBlock == null) return;
+                if (!this.board.canAdd(this.currentBlock)) {
+                    this.isLost = true;
+                    this.time = Date.now();
+                    this.gameOverHandler?.();
+                    return;
+                }
                 while (this.board.canAdd(this.currentBlock)) {
                     this.currentBlock.fall();
                 }
