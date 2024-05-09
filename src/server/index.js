@@ -144,6 +144,13 @@ io.use((socket, next) => {
     playerSession(socket.request, {}, next);
 });
 
+function checkUserWasPlaying(roomName, userId) {
+    if (!roomName) return false;
+    if (!rooms[roomName]?.players.find((p) => p.id === userId && p.status === "offline"))
+        return false;
+    return true;
+}
+
 io.on("connection", (socket) => {
     const { user, roomName } = socket.request.session;
 
@@ -156,11 +163,12 @@ io.on("connection", (socket) => {
     onlineUserIds.add(user.id);
 
     // if user was already in the room, join the room again
-    // TODO: check if game in that room is over
-    if (roomName && rooms[roomName]?.players.map((p) => p.id).includes(user.id)) {
+    if (checkUserWasPlaying(roomName, user.id)) {
         socket.join(roomName);
+        rooms[roomName].players.find((p) => p.id === user.id).status = "playing";
         socket.emit("player online", user);
         socket.emit("init", { room: rooms[roomName] });
+        socket.emit("resume");
     } else {
         console.log("join lobby", user);
         socket.join("lobby");
@@ -228,12 +236,25 @@ io.on("connection", (socket) => {
         socket.leave(roomName);
         socket.join("lobby");
 
-        rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== user.id);
+        const player = rooms[roomName].players.find((p) => p.id === user.id);
+        // mark the player lost if the game has started, else remove the game from game controller
+        if (player && player.status === "playing") {
+            gameControllers[roomName].games[player.id].isLost = true;
+        } else {
+            player && delete gameControllers[roomName].games[player.id];
+        }
+        rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== player.id);
+
         socket.request.session.roomName = null;
         socket.request.session.save();
         socket.emit("leave game");
         socket.emit("remove player", user);
         io.to(roomName).emit("remove player", user);
+
+        // if not players left in the room, reset the game
+        if (rooms[roomName].players.length === 0) {
+            gameControllers[roomName].reset();
+        }
     });
 
     socket.on("disconnect", () => {
@@ -243,6 +264,12 @@ io.on("connection", (socket) => {
         if (player) {
             player.status = "offline";
             io.to(roomName).emit("player offline", user);
+        }
+
+        // if all players are offline, reset the game
+        if (rooms[roomName]?.players.every((p) => p.status === "offline")) {
+            gameControllers[roomName].reset();
+            rooms[roomName].players = [];
         }
 
         onlineUserIds.delete(user.id);
@@ -255,22 +282,23 @@ io.on("connection", (socket) => {
     socket.on("ready", () => {
         const roomName = socket.request.session.roomName;
         rooms[roomName].players.find((p) => p.id === user.id).status = "ready";
+        const gameController = gameControllers[roomName];
         // if all are ready, start the game
         if (
             rooms[roomName].players.length === ROOM_SIZE &&
             rooms[roomName].players.every((p) => p.status === "ready")
         ) {
-            const gameController = gameControllers[roomName];
             io.to(roomName).emit("game start");
             gameController.startGameLoop((gameStates, timeLeft) => {
                 io.to(roomName).emit("game states", gameStates, timeLeft);
             });
-            gameController.addEndGameHandler((reason) => {
-                io.to(roomName).emit("game end", reason);
+            gameController.addEndGameHandler((gameEndStates, gameStartTime) => {
+                io.to(roomName).emit("game end", gameEndStates, gameStartTime);
             });
 
             rooms[roomName].players.forEach((p) => (p.status = "playing"));
         }
+        io.to(roomName).emit("game states", [gameController.getGameState(user)]);
     });
 
     socket.on("action", ({ action, payload }) => {
@@ -283,23 +311,6 @@ io.on("connection", (socket) => {
     // another way is to send game state only when there is a change, while the client keeps track of the time
     // on each action, the game will send a truth time to the client, and the client will calibrate its time
 });
-
-// function startGameInterval(client, roomName, user) {
-//   let game = new Game(roomName, user);
-//   game.addKeyHandlers(client);
-//   const intervalID = setInterval(() => {
-//     const status = game.update();
-//     switch (status) {
-//       case "success":
-//         break;
-//       case "gameloss":
-//         client.emit("gameover", { data: "gg simida" });
-//         clearInterval(intervalID);
-//         break;
-//     }
-//     io.to(game.roomName).emit("gameState", JSON.stringify(game.getGameState()));
-//   }, 1000 / FRAME_RATE);
-// }
 
 httpServer.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);

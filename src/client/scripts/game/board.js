@@ -19,7 +19,6 @@ export class Board {
     draw() {
         if (this.isGameOver) {
             this.drawGameOver();
-            return;
         }
         this.ctx.strokeStyle = "#888";
         for (let row = 0; row < this.rows; row++) {
@@ -43,10 +42,7 @@ export class Board {
 
     clear() {
         this.canvas.style.filter = "";
-        this.boardState = Array(20)
-            .fill(0)
-            .map(() => Array(10).fill("white"));
-        this.draw();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     drawTextBG(txt, x, y) {
@@ -57,7 +53,7 @@ export class Board {
         this.ctx.textBaseline = "top";
 
         /// color for background
-        this.ctx.fillStyle = "#f00";
+        this.ctx.fillStyle = "gray";
 
         /// get width of text
         var width = this.ctx.measureText(txt).width;
@@ -66,7 +62,7 @@ export class Board {
         this.ctx.fillRect(x, y, width, parseInt(this.ctx.font, 10));
 
         /// text color
-        this.ctx.fillStyle = "#000";
+        this.ctx.fillStyle = "black";
 
         /// draw text on top
         this.ctx.fillText(txt, x, y);

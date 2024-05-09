@@ -7,8 +7,8 @@ export const THREE_MINUTES = 3 * 60 * 1000;
 export const BOARD_WIDTH = 10;
 export const BOARD_HEIGHT = 20;
 
-export const BORDER_SIZE = 3;
-export const CELL_SIZE = 35;
+export const BORDER_SIZE = 1;
+export const CELL_SIZE = 30;
 
 export const OPPONENT_BOARD_BORDER_SIZE = 1;
 export const OPPONENT_BOARD_CELL_SIZE = 12;

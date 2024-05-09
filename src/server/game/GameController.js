@@ -13,6 +13,14 @@ export class GameController {
         this.handleEndGame = null;
     }
 
+    reset() {
+        this.games = {};
+        this.intervalId = null;
+        this.gameStartTime = null;
+        this.gameEndTime = null;
+        this.handleEndGame = null;
+    }
+
     createGame(user) {
         this.games[user.id] = new Game(this.roomName, user);
         this.games[user.id].addClearRowHandler(this.handleClearRow.bind(this));
@@ -20,6 +28,10 @@ export class GameController {
 
     getGameState(user) {
         return this.games[user.id].getGameState();
+    }
+
+    getGameEndState(user) {
+        return this.games[user.id].getGameEndState();
     }
 
     handleClearRow(playerID, numGarbageRow) {
@@ -42,15 +54,18 @@ export class GameController {
     }
 
     updateGame(callback) {
-        const timeLeft = this.gameEndTime - Date.now();
+        const timeLeft = Math.max(this.gameEndTime - Date.now(), 0);
         const gameStates = Object.values(this.games).map((game) => {
             game.update();
             return game.getGameState();
         });
         callback(gameStates, timeLeft);
+        const gameEndStates = Object.values(this.games).map((game) => {
+            return game.getGameEndState();
+        });
         if (timeLeft <= 0 || gameStates.every((game) => game.isLost)) {
             clearInterval(this.intervalId);
-            this.handleEndGame?.(timeLeft <= 0 ? "timeout" : "allLost");
+            this.handleEndGame?.(gameEndStates, this.gameStartTime);
         }
     }
 

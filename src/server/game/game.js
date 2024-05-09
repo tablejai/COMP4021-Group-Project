@@ -1,15 +1,23 @@
 import { Board } from "./board.js";
 import { Block } from "./block.js";
+import { THREE_MINUTES } from "../../shared/constants.js";
 
 export class Game {
     constructor(roomName, user) {
         this.roomName = roomName;
         this.playerID = user.id;
+        this.playerName = user.username;
         this.currentBlock = null;
+        this.nextBlocks = Array.from({ length: 3 }).map(
+            () => new Block(Block.getRandomBlockType())
+        );
         this.board = new Board(10, 20);
         this.isLost = false;
         this.gameOverHandler = null;
         this.clearRowHandler = null;
+        this.time = null;
+        this.rowCleared = 0;
+        // this.garbageRow = 0;
     }
 
     getCurrentBlock() {
@@ -21,7 +29,8 @@ export class Game {
             this.board.addBlockToBoard(this.currentBlock);
         }
 
-        this.currentBlock = new Block(Block.getRandomBlockType());
+        this.currentBlock = this.nextBlocks.shift();
+        this.nextBlocks.push(new Block(Block.getRandomBlockType()));
     }
 
     addGarbageRow(numGarbageRow) {
@@ -53,6 +62,7 @@ export class Game {
                 this.spawnNewBlock();
                 if (!this.board.canAdd(this.currentBlock)) {
                     this.isLost = true;
+                    this.time = Date.now();
                     this.gameOverHandler?.();
                 }
             }
@@ -60,6 +70,7 @@ export class Game {
 
         // Clear Rows
         const rowsCleared = this.board.clearRows();
+        this.rowCleared += rowsCleared;
         if (rowsCleared > 0) {
             // TODO: Figure out a more playable way for numGarbageRow to be determined
             const numGarbageRow = rowsCleared;
@@ -71,8 +82,19 @@ export class Game {
         return {
             playerID: this.playerID,
             board: this.board.getBoardState(),
-            currentBlock: this.currentBlock.getBlockInfo(),
+            currentBlock: this.currentBlock?.getBlockInfo(),
+            nextBlocks: this.nextBlocks.map((block) => block.getBlockInfo()),
             isLost: this.isLost,
+        };
+    }
+
+    getGameEndState() {
+        return {
+            playerID: this.playerID,
+            playerName: this.playerName,
+            time: this.time,
+            rowCleared: this.rowCleared,
+            // garbageRow: this.garbageRow,
         };
     }
 
