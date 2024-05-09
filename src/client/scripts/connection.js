@@ -28,13 +28,17 @@ function Connection(user) {
         // update room list ui
         const roomListDiv = document.querySelector("#room-list");
         const rooms = Object.values(roomList).map(({ name, players, size }) => {
-            const isGameStarted = players.some((player) => player.status === "playing");
+            const isGameStarted = players.some(
+                (player) => player.status === "playing"
+            );
 
             const room = document.createElement("div");
             room.classList.add("room");
 
             isGameStarted && room.classList.add("disabled");
-            room.title = isGameStarted ? "Game is in progress" : "Click to join";
+            room.title = isGameStarted
+                ? "Game is in progress"
+                : "Click to join";
 
             room.innerHTML = `
         <span class="room-name">${name}</span>
@@ -117,6 +121,11 @@ function Connection(user) {
         };
     });
 
+    socket.on("clearRow", (player) => {
+        const clear_sound = new Audio("tetris_clear.mp3");
+        clear_sound.play();
+    });
+
     socket.on("game states", (gameStates, timeLeft = THREE_MINUTES) => {
         if (!playerReady) return;
         const timeLeftDiv = document.querySelector("#timer");
@@ -125,9 +134,9 @@ function Connection(user) {
         const ms = Math.max(Math.floor(timeLeft / 10) % 100, 0);
 
         // pad the numbers with 0
-        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${
-            ms < 10 ? `0${ms}` : ms
-        }`;
+        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${
+            sec < 10 ? `0${sec}` : sec
+        }:${ms < 10 ? `0${ms}` : ms}`;
         currentGameState.parseGameStates(gameStates);
     });
 

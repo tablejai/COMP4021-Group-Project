@@ -53,6 +53,10 @@ export class GameController {
         this.games[user.id].addGameOverHandler(callback);
     }
 
+    addRowClearSoundHandler(user, callback) {
+        this.games[user.id].addRowClearSoundHandler(callback);
+    }
+
     updateGame(callback) {
         const timeLeft = Math.max(this.gameEndTime - Date.now(), 0);
         const gameStates = Object.values(this.games).map((game) => {
