@@ -1,5 +1,5 @@
 export const PORT = 9000;
-export const ROOM_SIZE = 2;
+export const ROOM_SIZE = 9;
 
 export const FRAME_RATE = 20;
 export const THREE_MINUTES = 3 * 60 * 1000;
