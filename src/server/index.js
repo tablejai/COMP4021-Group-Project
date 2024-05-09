@@ -11,7 +11,8 @@ import { GameController } from "./game/GameController.js";
 import session from "express-session";
 import { randomUUID } from "crypto";
 
-const __dirname = import.meta.dirname || fileURLToPath(new URL(".", import.meta.url));
+const __dirname =
+    import.meta.dirname || fileURLToPath(new URL(".", import.meta.url));
 const __filename = import.meta.filename || fileURLToPath(import.meta.url);
 
 const app = express();
@@ -52,7 +53,9 @@ app.post("/signup", (req, res) => {
         });
     }
 
-    const users = JSON.parse(fs.readFileSync(path.join(__dirname, "data/users.json"), "utf-8"));
+    const users = JSON.parse(
+        fs.readFileSync(path.join(__dirname, "data/users.json"), "utf-8")
+    );
 
     if (users[username]) {
         return res.json({
@@ -63,7 +66,10 @@ app.post("/signup", (req, res) => {
 
     const hash = bcrypt.hashSync(password, 9);
     users[username] = { password: hash, id: randomUUID() };
-    fs.writeFileSync(path.join(__dirname, "data/users.json"), JSON.stringify(users, null, 2));
+    fs.writeFileSync(
+        path.join(__dirname, "data/users.json"),
+        JSON.stringify(users, null, 2)
+    );
 
     res.json({ status: "success" });
 });
@@ -85,7 +91,9 @@ app.post("/signin", (req, res) => {
         });
     }
 
-    const users = JSON.parse(fs.readFileSync(path.join(__dirname, "data/users.json"), "utf-8"));
+    const users = JSON.parse(
+        fs.readFileSync(path.join(__dirname, "data/users.json"), "utf-8")
+    );
     if (!(username in users)) {
         return res.json({
             status: "error",
@@ -137,7 +145,10 @@ const rooms = Object.fromEntries(
 );
 
 const gameControllers = Object.fromEntries(
-    Object.keys(rooms).map((roomName) => [roomName, new GameController(roomName)])
+    Object.keys(rooms).map((roomName) => [
+        roomName,
+        new GameController(roomName),
+    ])
 );
 
 io.use((socket, next) => {
@@ -146,7 +157,11 @@ io.use((socket, next) => {
 
 function checkUserWasPlaying(roomName, userId) {
     if (!roomName) return false;
-    if (!rooms[roomName]?.players.find((p) => p.id === userId && p.status === "offline"))
+    if (
+        !rooms[roomName]?.players.find(
+            (p) => p.id === userId && p.status === "offline"
+        )
+    )
         return false;
     return true;
 }
@@ -165,7 +180,8 @@ io.on("connection", (socket) => {
     // if user was already in the room, join the room again
     if (checkUserWasPlaying(roomName, user.id)) {
         socket.join(roomName);
-        rooms[roomName].players.find((p) => p.id === user.id).status = "playing";
+        rooms[roomName].players.find((p) => p.id === user.id).status =
+            "playing";
         socket.emit("player online", user);
         socket.emit("init", { room: rooms[roomName] });
         socket.emit("resume", gameControllers[roomName].getGameState(user).isLost);
@@ -214,6 +230,9 @@ io.on("connection", (socket) => {
         gameController.addGameOverHandler(user, () => {
             socket.emit("gameover", { data: "gg simida" });
         });
+        gameController.addRowClearSoundHandler(user, () => {
+            socket.emit("clearRow");
+        });
 
         // emit initial room data
         socket.emit("init", { room: rooms[roomName] });
@@ -243,7 +262,9 @@ io.on("connection", (socket) => {
         } else {
             player && delete gameControllers[roomName].games[player.id];
         }
-        rooms[roomName].players = rooms[roomName].players.filter((p) => p.id !== player.id);
+        rooms[roomName].players = rooms[roomName].players.filter(
+            (p) => p.id !== player.id
+        );
 
         socket.request.session.roomName = null;
         socket.request.session.save();
@@ -285,7 +306,7 @@ io.on("connection", (socket) => {
         const gameController = gameControllers[roomName];
         // if all are ready, start the game
         if (
-            rooms[roomName].players.length === ROOM_SIZE &&
+            rooms[roomName].players.length >= 1 &&
             rooms[roomName].players.every((p) => p.status === "ready")
         ) {
             io.to(roomName).emit("game start");
@@ -298,7 +319,9 @@ io.on("connection", (socket) => {
 
             rooms[roomName].players.forEach((p) => (p.status = "playing"));
         }
-        io.to(roomName).emit("game states", [gameController.getGameState(user)]);
+        io.to(roomName).emit("game states", [
+            gameController.getGameState(user),
+        ]);
     });
 
     socket.on("action", ({ action, payload }) => {

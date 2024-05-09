@@ -41,11 +41,14 @@ class GameState {
     parseOthersGameState(gameState) {
         const currentPlayerID = gameState["playerID"];
         if (!(currentPlayerID in this.opponentBoards)) {
-            let boardId = `opponent-board-${Object.keys(this.opponentBoards).length + 1}`;
+            let boardId = `opponent-board-${
+                Object.keys(this.opponentBoards).length + 1
+            }`;
             this.opponentBoards[currentPlayerID] = new Board(boardId, 14);
         }
         this.opponentBoards[currentPlayerID].updateBoard(gameState["board"]);
-        if (gameState.isLost) this.opponentBoards[currentPlayerID].isGameOver = true;
+        if (gameState.isLost)
+            this.opponentBoards[currentPlayerID].isGameOver = true;
     }
 
     parseGameStates(gameStates) {
@@ -66,7 +69,12 @@ class GameState {
                 gameState.time = startTime + THREE_MINUTES;
             }
             if (playerID == this.myPlayerID) {
-                console.log("My time:", gameState.time, "; start time:", startTime);
+                console.log(
+                    "My time:",
+                    gameState.time,
+                    "; start time:",
+                    startTime
+                );
                 const time = gameState.time - startTime;
                 const min = Math.floor(time / 60 / 1000);
                 const sec = Math.floor(time / 1000) % 60;
