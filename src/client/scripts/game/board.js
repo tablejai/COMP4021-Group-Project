@@ -19,7 +19,6 @@ export class Board {
     draw() {
         if (this.isGameOver) {
             this.drawGameOver();
-            return;
         }
         this.ctx.strokeStyle = "#888";
         for (let row = 0; row < this.rows; row++) {
