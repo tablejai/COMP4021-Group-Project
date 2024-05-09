@@ -306,7 +306,7 @@ io.on("connection", (socket) => {
         const gameController = gameControllers[roomName];
         // if all are ready, start the game
         if (
-            rooms[roomName].players.length === ROOM_SIZE &&
+            rooms[roomName].players.length >= 1 &&
             rooms[roomName].players.every((p) => p.status === "ready")
         ) {
             io.to(roomName).emit("game start");
