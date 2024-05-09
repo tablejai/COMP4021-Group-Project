@@ -196,8 +196,7 @@ button:focus {
     position: relative;
     display: flex;
     justify-content: space-evenly;
-    height: 600px;
-    width: 1000px;
+    margin-bottom: 200px;
 }
 
 .opponent-board-container {
@@ -230,6 +229,8 @@ button:focus {
 }
 
 #timer {
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
     color: white;
     font-size: 2rem;
     margin-bottom: 1rem;

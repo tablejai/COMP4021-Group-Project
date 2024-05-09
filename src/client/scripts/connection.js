@@ -5,6 +5,7 @@ import { handleKeyPress } from "./game/interaction.js";
 function Connection(user) {
     const socket = io();
     let currentGameState = null;
+    let playerReady = false;
 
     const connect = () => {
         socket.connect();
@@ -61,9 +62,11 @@ function Connection(user) {
             leaveGame.classList.add("hidden");
         };
         readyButton.classList.remove("hidden");
+        playerReady = false;
         readyButton.onclick = () => {
             socket.emit("ready");
             readyButton.classList.add("hidden");
+            playerReady = true;
             const timeLeftDiv = document.querySelector("#timer");
             timeLeftDiv.classList.remove("hidden");
         };
@@ -88,14 +91,16 @@ function Connection(user) {
     });
 
     socket.on("game states", (gameStates, timeLeft = THREE_MINUTES) => {
+        if (!playerReady) return;
         const timeLeftDiv = document.querySelector("#timer");
         const min = Math.max(Math.floor(timeLeft / 60 / 1000), 0);
         const sec = Math.max(Math.floor(timeLeft / 1000) % 60, 0);
         const ms = Math.max(Math.floor(timeLeft / 10) % 100, 0);
 
         // pad the numbers with 0
-        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${ms < 10 ? `0${ms}` : ms
-            }`;
+        timeLeftDiv.textContent = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}:${
+            ms < 10 ? `0${ms}` : ms
+        }`;
         currentGameState.parseGameStates(gameStates);
     });
 

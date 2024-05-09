@@ -54,7 +54,7 @@ export class Board {
         this.ctx.textBaseline = "top";
 
         /// color for background
-        this.ctx.fillStyle = "#f00";
+        this.ctx.fillStyle = "gray";
 
         /// get width of text
         var width = this.ctx.measureText(txt).width;
@@ -63,7 +63,7 @@ export class Board {
         this.ctx.fillRect(x, y, width, parseInt(this.ctx.font, 10));
 
         /// text color
-        this.ctx.fillStyle = "#000";
+        this.ctx.fillStyle = "black";
 
         /// draw text on top
         this.ctx.fillText(txt, x, y);

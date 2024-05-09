@@ -1,3 +1,5 @@
+import { BOARD_WIDTH, BOARD_HEIGHT, CELL_SIZE, BORDER_SIZE } from "../../../constants.js";
+
 class Block {
     constructor(blockType, blockShape, x, y) {
         this.blockType = blockType;
@@ -7,15 +9,7 @@ class Block {
         this.y = y;
     }
 
-    draw() {
-        const canvas = document.getElementById("grid");
-        const ctx = canvas.getContext("2d");
-
-        const BORDER_SIZE = 1;
-        const CELL_SIZE = 30;
-        const BOARD_WIDTH = 10;
-        const BOARD_HEIGHT = 20;
-
+    draw(ctx) {
         ctx.lineWidth = BORDER_SIZE;
         const topLeftX =
             Math.floor(ctx.canvas.width / 2) -
