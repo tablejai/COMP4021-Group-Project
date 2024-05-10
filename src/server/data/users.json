@@ -18,5 +18,13 @@
   "c": {
     "password": "$2b$09$OxvHW4maZuoW6YeW04XjaezveFdBdN52unPJgOV3P92Fx9g4sWFnG",
     "id": "3a9c62c8-f8ce-4439-8e7b-9c9de6b3bc3e"
+  },
+  "alex": {
+    "password": "$2b$09$r0PEmvi/c5/3r1FwTr5MbeGibcDnOLzT3mkpfBVE3CrLYglRja/4m",
+    "id": "7c341dbc-9fb0-454b-b4db-cb363e3718c7"
+  },
+  "x": {
+    "password": "$2b$09$Y5v/k0U6wpqxj/n7A8j05uWBbHdwaMc.h6Zqw3O3gWdSaZKlhoN3K",
+    "id": "7947427a-5af6-4c75-adbe-3856fb6e9aaa"
   }
 }

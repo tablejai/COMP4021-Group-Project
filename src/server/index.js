@@ -184,7 +184,10 @@ io.on("connection", (socket) => {
             "playing";
         socket.emit("player online", user);
         socket.emit("init", { room: rooms[roomName] });
-        socket.emit("resume", gameControllers[roomName].getGameState(user).isLost);
+        socket.emit(
+            "resume",
+            gameControllers[roomName].getGameState(user).isLost
+        );
     } else {
         console.log("join lobby", user);
         socket.join("lobby");
@@ -306,7 +309,7 @@ io.on("connection", (socket) => {
         const gameController = gameControllers[roomName];
         // if all are ready, start the game
         if (
-            rooms[roomName].players.length >= 1 &&
+            rooms[roomName].players.length > 1 &&
             rooms[roomName].players.every((p) => p.status === "ready")
         ) {
             io.to(roomName).emit("game start");
