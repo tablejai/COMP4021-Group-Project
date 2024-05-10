@@ -279,3 +279,26 @@ th {
 #player-rankings {
     text-align: center;
 }
+
+#game-info-button{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 101;
+}
+
+#game-info{
+    background-color: rgba(95, 186, 202, 1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+
+    z-index: 101;
+}

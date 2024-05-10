@@ -5,6 +5,7 @@ const lobbyOverlay = document.querySelector("#lobby-overlay");
 const signInForm = document.querySelector("#signin-form");
 const singUpForm = document.querySelector("#signup-form");
 const lobbySignOut = document.querySelector("#lobby-signout");
+const gameInfo = document.querySelector("#game-info-button");
 
 let connection = null;
 
@@ -98,4 +99,11 @@ lobbySignOut.addEventListener("click", () => {
             connection.disconnect();
         }
     });
+});
+
+
+gameInfo.addEventListener("click", () => {
+    const gameInfo = document.querySelector("#game-info");
+    gameInfo.classList.toggle("hidden");
+    gameInfo.classList.add("overlay")
 });
