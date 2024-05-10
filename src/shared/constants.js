@@ -1,4 +1,4 @@
-export const PORT = 9000;
+export const PORT = 8000;
 export const ROOM_SIZE = 9;
 
 export const FRAME_RATE = 20;
