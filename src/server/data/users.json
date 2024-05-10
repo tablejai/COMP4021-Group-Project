@@ -26,5 +26,41 @@
   "x": {
     "password": "$2b$09$Y5v/k0U6wpqxj/n7A8j05uWBbHdwaMc.h6Zqw3O3gWdSaZKlhoN3K",
     "id": "7947427a-5af6-4c75-adbe-3856fb6e9aaa"
+  },
+  "y": {
+    "password": "$2b$09$/Twcwi8g1.iLhRWGzqdH6OqutVgjDDw.zYUPtIpQqrYB0MHOrTz0y",
+    "id": "3f5d2e91-8997-4055-9030-89fc4ea21a48"
+  },
+  "alexb": {
+    "password": "$2b$09$Ch8Mt4A2TzaRcLdsiMtYxeudR1g9aDLds.eTw0TVVcaKAf1tKt6Uy",
+    "id": "954240a4-d396-4b72-b0cd-854b91ff2671"
+  },
+  "Leo3": {
+    "password": "$2b$09$ukdC5YzSZ8Z3pvPgwMc7ruyWD8T5kl/o1GgmQuaAnIctUBOraFwVa",
+    "id": "fbd318e2-ee67-422a-9e1a-8be9c754f063"
+  },
+  "alexc": {
+    "password": "$2b$09$3GVHoDeYn4j2m6RfSjIBzubffzPnFkZpbrw/134lvgR3hMb0VIsnS",
+    "id": "1a007b66-5f41-42d8-861e-c89f6c9fdeed"
+  },
+  "alexd": {
+    "password": "$2b$09$FksGBNGypOsc/zpHXHJry.aDXhm8qYodEBgDpDddbQw8ImTf6bVs6",
+    "id": "27edbdd0-b3a5-4405-b08f-db11de13715d"
+  },
+  "Leo4": {
+    "password": "$2b$09$zCSV31hc/gMJdvVm6zx.C.ogEqudQdxhOdZkyAOInnowlc5NZMPKC",
+    "id": "fa8357dd-e3cc-4f31-862a-2db483e4b503"
+  },
+  "p": {
+    "password": "$2b$09$2lRzVD1zkESDoTQ5DAqX5eE1R/jzNrcaD.JzFxR8uZoen4A5OESAG",
+    "id": "6e49d716-4e47-41d5-8079-83b9535fcae1"
+  },
+  "z": {
+    "password": "$2b$09$GaP7wZTP20AdZCNFJI9U/.sehC8qR4RwNSIZuRLxr/fuB6A1C.2Me",
+    "id": "be74e602-0504-4a1c-8753-c476a95b9609"
+  },
+  "o": {
+    "password": "$2b$09$9U3oUATNXJrCBZDSlZ0TlecP7crVjCc6l9zXRcylZe3jlUa40Nw7K",
+    "id": "ad485220-a38b-4516-9d79-2fe5424ef96d"
   }
 }

@@ -25,7 +25,10 @@ export function handleKeyPress(e) {
             return { action: "DROP" };
         case "c":
             e.preventDefault();
-            return { action: "CHEAT" };
+            return { action: "CHEAT CLEAR ROW" };
+        case "v":
+            e.preventDefault();
+            return { action: "CHEAT SEND GARBAGE ROW" };
         default:
             return null;
     }

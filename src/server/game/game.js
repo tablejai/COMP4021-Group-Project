@@ -170,9 +170,12 @@ export class Game {
                 this.currentBlock.rise();
                 this.spawnNewBlock();
                 break;
-            case "CHEAT":
+            case "CHEAT CLEAR ROW":
                 // Cheat Mode: Clears the lowest row
                 this.board.clearBottomRow();
+                break;
+            case "CHEAT SEND GARBAGE ROW":
+                // Cheat Mode: Clears the lowest row
                 this.clearRowHandler(this.playerID, 1);
                 break;
             default:

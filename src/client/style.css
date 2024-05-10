@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+.fire{
+    width:30px;
+    height:30px;
+}
+
 html,
 body {
     font-family: "Geologica", "Inter", sans-serif;
