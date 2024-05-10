@@ -35,6 +35,9 @@ export class Game {
     }
 
     addGarbageRow(numGarbageRow) {
+        if (this.isLost) {
+            return;
+        }
         this.isLost = this.board.addGarbageRow(numGarbageRow);
     }
 
@@ -170,6 +173,7 @@ export class Game {
             case "CHEAT":
                 // Cheat Mode: Clears the lowest row
                 this.board.clearBottomRow();
+                this.clearRowHandler(this.playerID, 1);
                 break;
             default:
                 break;
