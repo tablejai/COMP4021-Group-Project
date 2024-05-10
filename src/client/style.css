@@ -4,9 +4,9 @@
     box-sizing: border-box;
 }
 
-.fire{
-    width:30px;
-    height:30px;
+.fire {
+    width: 30px;
+    height: 30px;
 }
 
 html,
@@ -311,4 +311,33 @@ kbd {
     padding: 3px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
     border-radius: 3px;
+}
+
+.cat {
+    position: absolute;
+    top: 77px;
+    width: 40px;
+    animation: walking-animation 10s infinite;
+}
+
+@keyframes walking-animation {
+    0% {
+        transform: translateX(0) scaleX(1);
+    }
+    1% {
+        transform: translateX(0) scaleX(-1);
+    }
+    50% {
+        transform: translateX(250px) scaleX(-1);
+    }
+    51% {
+        transform: translateX(250px) scaleX(1);
+    }
+    100% {
+        transform: translateX(0) scaleX(1);
+    }
+}
+
+#main-grid {
+    position: relative;
 }
