@@ -110,5 +110,5 @@ const emojis = ["emoji_1.png", "emoji_2.webp", "emoji_3.png"];
 let emojiIdx = 0;
 setInterval(() => {
     const emoji = document.querySelector("#emoji");
-    emoji.src = emojis[emojiIdx++ % 3];
+    emoji.src = `assets/${emojis[emojiIdx++ % emojis.length]}`;
 }, 300);

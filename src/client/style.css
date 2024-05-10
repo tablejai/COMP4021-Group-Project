@@ -9,9 +9,9 @@
     height: 30px;
 }
 
-#emoji{
-    width:30px;
-    height:30px;
+#emoji {
+    width: 30px;
+    height: 30px;
 }
 
 html,
@@ -292,6 +292,9 @@ th {
 
 #game-info-button {
     position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     bottom: 20px;
     right: 20px;
     z-index: 101;
