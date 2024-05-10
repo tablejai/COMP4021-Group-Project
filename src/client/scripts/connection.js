@@ -20,6 +20,9 @@ function Connection(user) {
         socket.emit("get roomList");
         const lobbyOverlay = document.querySelector("#lobby-overlay");
         lobbyOverlay.classList.remove("hidden");
+        var bgm = new Audio("background_music.mp3");
+        bgm.loop = true;
+        bgm.play();
     });
 
     socket.on("room list", (roomList) => {
