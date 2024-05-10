@@ -21,25 +21,36 @@
         </header>
         <main>
             <button id="game-info-button">Game Info</button>
-            <div id="game-info" class="hidden">
-                <h2>Game Description</h2>
-                <p>This is a multiplayer Tetris game with 9 players.</p>
-                <p>
-                    The goal is to survive the longest time while clear lines by arranging falling
-                    blocks to create complete rows.
-                </p>
-                <p>
-                    Clearing rows in your board would send garbage rows to all the opponents.
-                    However, clearing garbage rows would not do so.
-                </p>
-                <h2>Instructions</h2>
-                <p>Use the A/D/S keys to move the blocks left, right or down.</p>
-                <p>Press the W/Q/E keys to rotate the blocks. Space bar to drop.</p>
-                <p><b>CHEAT MODE</b> Press the C key to instantly clear the bottom row.</p>
-                <p>
-                    Clear as many lines as possible to earn points and compete with other players.
-                    Win by surviving the longest time!
-                </p>
+            <div id="game-info-overlay" class="overlay hidden">
+                <div>
+                    <h2>Game Description</h2>
+                    <p>This is a multiplayer Tetris game with 9 players.</p>
+                    <p>
+                        The goal is to survive the longest time while clear lines by arranging
+                        falling blocks to create complete rows.
+                    </p>
+                    <p>
+                        Clearing rows in your board would send garbage rows to all the opponents.
+                        However, clearing garbage rows would not do so.
+                    </p>
+                    <h2>Instructions</h2>
+                    <p>
+                        Use the <kbd>A</kbd>/<kbd>D</kbd>/<kbd>S</kbd> keys to move the blocks left,
+                        right or down.
+                    </p>
+                    <p>
+                        Press the <kbd>W</kbd>/<kbd>Q</kbd>/<kbd>E</kbd> keys to rotate the blocks.
+                        Space bar to drop.
+                    </p>
+                    <p>
+                        <b>CHEAT MODE</b> Press the <kbd>C</kbd> key to instantly clear the bottom
+                        row.
+                    </p>
+                    <p>
+                        Clear as many lines as possible to earn points and compete with other
+                        players. Win by surviving the longest time!
+                    </p>
+                </div>
             </div>
             <div id="auth-overlay" class="overlay">
                 <div class="row container">
