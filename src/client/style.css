@@ -9,6 +9,11 @@
     height: 30px;
 }
 
+#emoji{
+    width:30px;
+    height:30px;
+}
+
 html,
 body {
     font-family: "Geologica", "Inter", sans-serif;

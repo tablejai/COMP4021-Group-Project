@@ -105,3 +105,10 @@ gameInfoButton.addEventListener("click", () => {
     const gameInfo = document.querySelector("#game-info-overlay");
     gameInfo.classList.toggle("hidden");
 });
+
+const emojis = ["emoji_1.png", "emoji_2.webp", "emoji_3.png"];
+let emojiIdx = 0;
+setInterval(() => {
+    const emoji = document.querySelector("#emoji");
+    emoji.src = emojis[emojiIdx++ % 3];
+}, 300);
